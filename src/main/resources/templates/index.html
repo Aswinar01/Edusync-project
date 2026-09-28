@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart PDF Updater</title>
+    <!-- Fonts: Elegant serif for headings, clean sans for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --text-dark: #333d45;
+            --text-light: #6e7a85;
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-highlight: rgba(255, 255, 255, 0.9);
+            --glass-shadow: rgba(0, 0, 0, 0.05);
+            
+            /* Success Button Gradient */
+            --btn-success-start: #9bf3d7;
+            --btn-success-end: #5dc3fd;
+            
+            /* Error Colors */
+            --error-color: #f07b5a;
+            
+            /* Success Colors */
+            --success-color: #83e878;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f7f9fb;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Dynamic Silk Light Background --- */
+        .bg-mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at 15% 50%, rgba(230,235,255,1), transparent 50%),
+                        radial-gradient(circle at 85% 30%, rgba(255,240,230,1), transparent 50%),
+                        radial-gradient(circle at 50% 80%, rgba(240,230,255,1), transparent 50%);
+            background-color: #f8fbff;
+            filter: blur(60px);
+            animation: mesh-shift 20s infinite alternate ease-in-out;
+        }
+        
+        .bg-waves {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            opacity: 0.5;
+            background-image: 
+                radial-gradient(ellipse at top left, rgba(255,255,255,0.8) 0%, transparent 40%),
+                radial-gradient(ellipse at bottom right, rgba(255,255,255,0.8) 0%, transparent 40%);
+            mix-blend-mode: overlay;
+        }
+
+        @keyframes mesh-shift {
+            0% { transform: scale(1.1) translate(2%, 2%); }
+            100% { transform: scale(1.2) translate(-2%, -2%); }
+        }
+
+        /* --- Global Typography --- */
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        p, span, a, button {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- Liquid Glass Material --- */
+        .liquid-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px) saturate(140%);
+            -webkit-backdrop-filter: blur(30px) saturate(140%);
+            border-radius: 40px;
+            border: 1px solid transparent;
+            /* Creating the physical glass thickness and specular highlights */
+            box-shadow: 
+                inset 0px 2px 4px var(--glass-highlight),
+                inset 0px -2px 10px rgba(255,255,255,0.2),
+                inset 1px 0px 4px rgba(255,255,255,0.5),
+                inset -1px 0px 4px rgba(255,255,255,0.5),
+                0px 20px 40px var(--glass-shadow),
+                0px 1px 3px rgba(0,0,0,0.02);
+            /* Refractive border effect */
+            position: relative;
+        }
+        
+        /* Inner subtle border to enhance refraction */
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.4) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* --- Screen Containers --- */
+        .screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            pointer-events: none;
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: all;
+        }
+
+        .screen.exit {
+            transform: translate(-50%, -55%) scale(0.98);
+        }
+
+        /* --- Landing Screen Specifics --- */
+        .landing-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .landing-header h1 {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .landing-header p {
+            font-size: 18px;
+            color: var(--text-light);
+            font-weight: 300;
+        }
+
+        .upload-zone {
+            width: 540px;
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 40px;
+        }
+
+        .upload-zone:hover, .upload-zone.dragover {
+            transform: scale(1.02);
+            box-shadow: 
+                inset 0px 2px 4px var(--glass-highlight),
+                0px 30px 60px rgba(0,0,0,0.08);
+        }
+
+        .upload-icon {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 24px;
+            stroke: var(--text-light);
+            stroke-width: 1;
+            fill: none;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        /* Button styling */
+        .btn-pill {
+            padding: 14px 40px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-glass-disabled {
+            background: rgba(255,255,255,0.4);
+            color: rgba(110, 122, 133, 0.5);
+            backdrop-filter: blur(10px);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6);
+            pointer-events: none;
+        }
+
+        .btn-glass-active {
+            background: rgba(255,255,255,0.7);
+            color: var(--text-dark);
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                inset 0 2px 4px rgba(255,255,255,0.9),
+                0 10px 20px rgba(0,0,0,0.05);
+            /* Reflection under button */
+            -webkit-box-reflect: below 2px linear-gradient(transparent 70%, rgba(255,255,255,0.3));
+        }
+
+        .btn-glass-active:hover {
+            background: rgba(255,255,255,0.9);
+            transform: translateY(-2px);
+        }
+
+        /* --- Processing Screen Specifics --- */
+        .card-container {
+            width: 580px;
+            padding: 80px 60px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .progress-pill-container {
+            width: 320px;
+            height: 36px;
+            border-radius: 40px;
+            background: rgba(255,255,255,0.3);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.1), inset 0 -2px 4px rgba(255,255,255,0.8);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            /* Inner glass specular */
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 30%; /* Will be animated */
+            background: linear-gradient(90deg, #74a3f7, #59d6db);
+            border-radius: 40px;
+            box-shadow: 
+                inset 0 4px 6px rgba(255,255,255,0.6),
+                inset 0 -2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            transition: width 0.4s ease;
+        }
+
+        /* The white light streak inside the progress bar */
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            border-radius: inherit;
+            transform: translateX(-100%);
+            animation: shimmer-streak 2s infinite ease-in-out;
+        }
+
+        @keyframes shimmer-streak {
+            100% { transform: translateX(100%); }
+        }
+
+        .status-text {
+            font-size: 18px;
+            color: var(--text-dark);
+            font-weight: 400;
+        }
+
+        /* --- Success & Error Screen Specifics --- */
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            position: relative;
+            /* Glass circle effect */
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                inset 0 4px 8px rgba(255,255,255,0.8),
+                inset 0 -2px 4px rgba(0,0,0,0.05),
+                0 10px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+
+        /* Glowing ring behind the glass circle */
+        .icon-circle::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: inherit;
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0.6;
+        }
+
+        .success-circle::before { background: var(--success-color); }
+        .error-circle::before { background: var(--error-color); }
+
+        .icon-svg {
+            width: 40px;
+            height: 40px;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .success-icon { stroke: var(--success-color); }
+        .error-icon { stroke: var(--error-color); }
+
+        .card-container h2 {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .card-container p {
+            font-size: 16px;
+            color: var(--text-light);
+            line-height: 1.5;
+            margin-bottom: 32px;
+            max-width: 400px;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(90deg, var(--btn-success-start), var(--btn-success-end));
+            color: white;
+            box-shadow: 
+                inset 0 4px 6px rgba(255,255,255,0.6),
+                0 10px 20px rgba(93, 195, 253, 0.3);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .btn-gradient:hover {
+            box-shadow: 
+                inset 0 4px 6px rgba(255,255,255,0.8),
+                0 12px 24px rgba(93, 195, 253, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .sub-link {
+            margin-top: 24px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(110, 122, 133, 0.3);
+            padding-bottom: 2px;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .sub-link:hover {
+            color: var(--text-dark);
+            border-bottom-color: var(--text-dark);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Backgrounds -->
+    <div class="bg-mesh"></div>
+    <div class="bg-waves"></div>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" accept=".pdf">
+    </form>
+
+    <!-- 1. Landing Screen -->
+    <div class="screen active" id="landing-screen">
+        <div class="landing-header">
+            <h1>Keep your documents factual.</h1>
+            <p>Upload a PDF and let AI verify and update the facts.</p>
+        </div>
+        
+        <div class="liquid-glass upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <svg class="upload-icon" viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <circle cx="12" cy="15" r="4"></circle>
+                <line x1="12" y1="13" x2="12" y2="17"></line>
+                <line x1="10" y1="15" x2="14" y2="15"></line>
+            </svg>
+            <span class="upload-text" id="uploadText">Drag & drop your PDF here or click to browse</span>
+        </div>
+
+        <button class="btn-pill btn-glass-disabled" id="btnUpload">Update Document</button>
+    </div>
+
+    <!-- 2. Processing Screen -->
+    <div class="screen" id="processing-screen">
+        <div class="liquid-glass card-container">
+            <div class="progress-pill-container">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <span class="status-text" id="statusText">Verifying facts with AI...</span>
+        </div>
+    </div>
+
+    <!-- 3. Success Screen -->
+    <div class="screen" id="success-screen">
+        <div class="liquid-glass card-container">
+            <div class="icon-circle success-circle">
+                <svg class="icon-svg success-icon" viewBox="0 0 24 24">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h2>Document processed successfully.</h2>
+            <p>Your document has been updated and is ready to download. All changes saved successfully.</p>
+            
+            <a href="#" id="downloadLink" class="btn-pill btn-gradient" download>
+                <svg class="btn-icon" viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Updated PDF
+            </a>
+            
+            <a class="sub-link" onclick="resetApp()">Process another document</a>
+        </div>
+    </div>
+
+    <!-- 4. Error Screen -->
+    <div class="screen" id="error-screen">
+        <div class="liquid-glass card-container">
+            <div class="icon-circle error-circle">
+                <svg class="icon-svg error-icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <h2>Processing Error</h2>
+            <p id="errorText">Please upload a valid PDF under 50 MB.</p>
+            
+            <button class="btn-pill btn-glass-active" onclick="resetApp()">Try again</button>
+            
+            <a class="sub-link" onclick="resetApp()">Go back</a>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const screens = {
+            landing: document.getElementById('landing-screen'),
+            processing: document.getElementById('processing-screen'),
+            success: document.getElementById('success-screen'),
+            error: document.getElementById('error-screen')
+        };
+        
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const uploadText = document.getElementById('uploadText');
+        const btnUpload = document.getElementById('btnUpload');
+        
+        const progressBar = document.getElementById('progressBar');
+        const statusText = document.getElementById('statusText');
+        const downloadLink = document.getElementById('downloadLink');
+
+        let selectedFile = null;
+
+        // Navigation
+        function showScreen(screenName) {
+            Object.values(screens).forEach(s => {
+                s.classList.remove('active');
+                if (s !== screens[screenName]) {
+                    // Small delay to allow CSS exit transition if needed, though opacity handles it
+                }
+            });
+            setTimeout(() => {
+                screens[screenName].classList.add('active');
+            }, 50); // Slight delay for smoother transition
+        }
+
+        function resetApp() {
+            selectedFile = null;
+            fileInput.value = '';
+            uploadText.textContent = "Drag & drop your PDF here or click to browse";
+            btnUpload.className = "btn-pill btn-glass-disabled";
+            btnUpload.onclick = null;
+            showScreen('landing');
+        }
+
+        // Drag & Drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+            dropZone.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); });
+        });
+
+        ['dragenter', 'dragover'].forEach(evt => {
+            dropZone.addEventListener(evt, () => dropZone.classList.add('dragover'));
+        });
+
+        ['dragleave', 'drop'].forEach(evt => {
+            dropZone.addEventListener(evt, () => dropZone.classList.remove('dragover'));
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handleFileSelect(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            if (file.type !== 'application/pdf') {
+                showScreen('error');
+                return;
+            }
+            if (file.size > 50 * 1024 * 1024) {
+                showScreen('error');
+                return;
+            }
+            
+            selectedFile = file;
+            uploadText.textContent = file.name;
+            btnUpload.className = "btn-pill btn-glass-active";
+            btnUpload.onclick = processDocument;
+        }
+
+        // Upload Process
+        async function processDocument() {
+            if (!selectedFile) return;
+
+            showScreen('processing');
+            progressBar.style.width = '10%';
+            statusText.textContent = "Extracting document structure...";
+
+            // Simulate progress while waiting for fetch
+            let p = 10;
+            const progressInterval = setInterval(() => {
+                if (p < 85) {
+                    p += (Math.random() * 5);
+                    progressBar.style.width = p + '%';
+                    
+                    if (p > 30 && p < 60) statusText.textContent = "Verifying facts with AI...";
+                    if (p >= 60) statusText.textContent = "Generating updated PDF...";
+                }
+            }, 800);
+
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                clearInterval(progressInterval);
+
+                if (!response.ok) {
+                    let errMsg = 'An unexpected server error occurred.';
+                    if (response.status === 422 || response.status === 500) {
+                        errMsg = response.headers.get('X-Error-Message') || errMsg;
+                    }
+                    throw new Error(errMsg);
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                
+                progressBar.style.width = '100%';
+                
+                setTimeout(() => {
+                    downloadLink.href = url;
+                    downloadLink.download = "Updated_" + selectedFile.name;
+                    showScreen('success');
+                }, 600);
+
+            } catch (error) {
+                clearInterval(progressInterval);
+                document.getElementById('errorText').textContent = error.message || 'Please upload a valid PDF under 50 MB.';
+                showScreen('error');
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
