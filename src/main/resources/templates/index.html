@@ -156,14 +156,17 @@
         }
 
         .landing-header h1 {
-            font-size: 42px;
-            margin-bottom: 12px;
+            font-size: clamp(52px, 7vw, 84px);
+            margin-bottom: 16px;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
         }
 
         .landing-header p {
-            font-size: 18px;
+            font-size: clamp(18px, 2.2vw, 24px);
             color: var(--text-light);
             font-weight: 300;
+            line-height: 1.65;
         }
 
         .upload-zone {
@@ -195,16 +198,16 @@
         }
 
         .upload-text {
-            font-size: 16px;
+            font-size: 18px;
             color: var(--text-light);
             font-weight: 400;
         }
 
         /* Button styling */
         .btn-pill {
-            padding: 14px 40px;
+            padding: 16px 48px;
             border-radius: 40px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 500;
             border: none;
             cursor: pointer;
@@ -271,9 +274,10 @@
             border-radius: 40px;
             box-shadow: 
                 inset 0 4px 6px rgba(255,255,255,0.6),
-                inset 0 -2px 4px rgba(0,0,0,0.1);
+                inset 0 -2px 4px rgba(0,0,0,0.1),
+                0 0 15px rgba(89, 214, 219, 0.4);
             position: relative;
-            transition: width 0.4s ease;
+            transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         /* The white light streak inside the progress bar */
@@ -292,20 +296,22 @@
         }
 
         .status-text {
-            font-size: 18px;
+            font-size: 20px;
             color: var(--text-dark);
             font-weight: 400;
+            transition: opacity 0.3s ease;
+            opacity: 1;
         }
 
         /* --- Success & Error Screen Specifics --- */
         .icon-circle {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             position: relative;
             /* Glass circle effect */
             background: rgba(255,255,255,0.2);
@@ -332,8 +338,8 @@
         .error-circle::before { background: var(--error-color); }
 
         .icon-svg {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             stroke-width: 2.5;
             stroke-linecap: round;
             stroke-linejoin: round;
@@ -344,16 +350,16 @@
         .error-icon { stroke: var(--error-color); }
 
         .card-container h2 {
-            font-size: 32px;
-            margin-bottom: 16px;
+            font-size: 38px;
+            margin-bottom: 20px;
         }
 
         .card-container p {
-            font-size: 16px;
+            font-size: 18px;
             color: var(--text-light);
-            line-height: 1.5;
-            margin-bottom: 32px;
-            max-width: 400px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 440px;
         }
 
         .btn-gradient {
@@ -381,10 +387,10 @@
         }
 
         .sub-link {
-            margin-top: 24px;
+            margin-top: 32px;
             color: var(--text-light);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 16px;
             border-bottom: 1px solid rgba(110, 122, 133, 0.3);
             padding-bottom: 2px;
             transition: color 0.2s;
@@ -399,6 +405,435 @@
         input[type="file"] {
             display: none;
         }
+        
+        /* --- Top Nav & Icons --- */
+        .top-nav {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.7), 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateX(-4px);
+        }
+
+        .icon-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                inset 0 4px 6px rgba(255, 255, 255, 0.7),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.05),
+                0 10px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            color: var(--text-dark);
+            text-decoration: none;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 
+                inset 0 4px 8px rgba(255, 255, 255, 0.9),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.05),
+                0 15px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .icon-btn svg {
+            width: 22px;
+            height: 22px;
+            stroke: currentColor;
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 400px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border-left: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+        }
+
+        .sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-dark);
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            transition: background 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Hide scrollbar */
+        .history-list::-webkit-scrollbar { display: none; }
+        .history-list { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .history-item {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6), 0 4px 10px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.6);
+        }
+        
+        .history-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .history-icon svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.5; fill:none; }
+        .history-details { display: flex; flex-direction: column; }
+        .history-name { font-weight: 500; font-size: 15px; margin-bottom: 4px;}
+        .history-date { font-size: 13px; color: var(--text-light); }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                top: 20px;
+                left: 20px;
+                right: 20px;
+            }
+            .upload-zone {
+                width: 90%;
+                max-width: 540px;
+                height: 220px;
+                margin-bottom: 20px;
+            }
+            .card-container {
+                width: 90%;
+                max-width: 580px;
+                padding: 40px 20px;
+            }
+            .sidebar {
+                width: 100%;
+                right: -100%;
+            }
+            .landing-header h1 {
+                font-size: 40px;
+            }
+            .landing-header p {
+                font-size: 16px;
+                padding: 0 20px;
+            }
+            .progress-pill-container {
+                width: 100%;
+            }
+            .btn-pill {
+                padding: 12px 30px;
+                font-size: 16px;
+            }
+            .back-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            .icon-btn {
+                width: 44px;
+                height: 44px;
+            }
+            .icon-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        /* --- Review Screen Specifics --- */
+        .review-container {
+            width: 90%;
+            max-width: 960px;
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                inset 0 4px 6px rgba(255, 255, 255, 0.7),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.05),
+                0 15px 35px rgba(0, 0, 0, 0.05);
+            animation: cardFloat 8s ease-in-out infinite;
+        }
+
+        .review-header {
+            text-align: center;
+            margin-bottom: 24px;
+            flex-shrink: 0;
+        }
+
+        .review-header h2 {
+            font-size: 36px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .review-header p {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+
+        .stats-pills {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .stat-pill {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            background: rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.7);
+            color: var(--text-dark);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .stat-outdated { color: #d32f2f; }
+        .stat-outdated strong { color: #d32f2f; }
+        .stat-updated { color: #2e7d32; }
+        .stat-updated strong { color: #2e7d32; }
+
+        .review-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            background: rgba(255,255,255,0.25);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.6);
+            padding: 24px;
+            margin-bottom: 24px;
+            
+            -ms-overflow-style: none; 
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,0,0,0.1) transparent;
+        }
+        .review-scroll-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        .review-scroll-area::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        .review-columns-header {
+            display: flex;
+            margin-bottom: 16px;
+            padding: 0 16px;
+        }
+        
+        .col-header {
+            flex: 1;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .outdated-header { color: #d32f2f; }
+        .updated-header { color: #2e7d32; }
+        .col-arrow { width: 48px; }
+
+        .review-item {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .review-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .review-col {
+            flex: 1;
+            background: rgba(255,255,255,0.5);
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.8);
+            font-size: 15px;
+            color: var(--text-dark);
+            line-height: 1.5;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .outdated-col { background: rgba(253, 237, 237, 0.5); border-color: rgba(253, 237, 237, 0.9); }
+        .updated-col { background: rgba(237, 247, 237, 0.5); border-color: rgba(237, 247, 237, 0.9); }
+
+        .review-col del {
+            background: rgba(211, 47, 47, 0.15);
+            color: #d32f2f;
+            text-decoration: line-through;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .review-col ins {
+            background: rgba(46, 125, 50, 0.15);
+            color: #2e7d32;
+            text-decoration: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .review-arrow {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #78909c;
+            flex-shrink: 0;
+        }
+        .review-arrow svg { width: 20px; height: 20px; }
+
+        .review-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .page-badge {
+            background: rgba(100, 150, 255, 0.15);
+            color: #3949ab;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .source-text {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .review-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            gap: 16px;
+        }
+        
+        .review-footer .btn-gradient {
+            padding: 14px 40px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .review-footer .sub-link {
+            margin-top: 0;
+        }
+
+        @media (max-width: 768px) {
+            .review-container {
+                height: 90vh;
+                padding: 20px 15px;
+            }
+            .review-header h2 { font-size: 24px; }
+            .review-header p { font-size: 14px; }
+            .stats-pills { flex-wrap: wrap; }
+            
+            .review-content {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .review-arrow {
+                transform: rotate(90deg);
+                margin: 4px 0;
+            }
+            .review-columns-header {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -406,6 +841,49 @@
     <!-- Backgrounds -->
     <div class="bg-mesh"></div>
     <div class="bg-waves"></div>
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div style="display: flex; gap: 15px; pointer-events: auto;">
+             <a href="/" class="back-btn" title="Return to Homepage">
+                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                     <line x1="19" y1="12" x2="5" y2="12"></line>
+                     <polyline points="12 19 5 12 12 5"></polyline>
+                 </svg>
+                 Go Back
+             </a>
+        </div>
+        <div style="display: flex; gap: 15px;">
+            <a href="/profile" class="icon-btn" title="Profile">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </a>
+            <button class="icon-btn" title="History" onclick="toggleHistory()">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- History Sidebar -->
+    <div class="sidebar" id="historySidebar">
+        <div class="sidebar-header">
+            <h2>Recent Documents</h2>
+            <button class="close-btn" onclick="toggleHistory()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="history-list" id="historyList">
+            <!-- History items will be injected here via JS -->
+        </div>
+    </div>
 
     <form id="uploadForm" enctype="multipart/form-data">
         <input type="file" id="fileInput" name="file" accept=".pdf">
@@ -442,27 +920,43 @@
         </div>
     </div>
 
-    <!-- 3. Success Screen -->
+    <!-- 3. Success / Review Screen -->
     <div class="screen" id="success-screen">
-        <div class="liquid-glass card-container">
-            <div class="icon-circle success-circle">
-                <svg class="icon-svg success-icon" viewBox="0 0 24 24">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
+        <div class="review-container">
+            <div class="review-header">
+                <h2>We found updates in your document</h2>
+                <p>Review what changed, then download the corrected version.</p>
+                
+                <div class="stats-pills">
+                    <span class="stat-pill"><strong>0</strong> claims checked</span>
+                    <span class="stat-pill stat-outdated"><strong>0</strong> outdated</span>
+                    <span class="stat-pill stat-updated"><strong>0</strong> updated</span>
+                </div>
             </div>
-            <h2>Document processed successfully.</h2>
-            <p>Your document has been updated and is ready to download. All changes saved successfully.</p>
             
-            <a href="#" id="downloadLink" class="btn-pill btn-gradient" download>
-                <svg class="btn-icon" viewBox="0 0 24 24">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                Download Updated PDF
-            </a>
+            <div class="review-scroll-area">
+                <div class="review-columns-header" id="reviewColsHeader" style="display:none;">
+                    <div class="col-header outdated-header">Outdated information</div>
+                    <div class="col-arrow"></div>
+                    <div class="col-header updated-header">Changed to</div>
+                </div>
+                
+                <div id="reviewItemsContainer">
+                    <!-- Dynamic review items injected here -->
+                </div>
+            </div>
             
-            <a class="sub-link" onclick="resetApp()">Process another document</a>
+            <div class="review-footer">
+                <a href="#" id="downloadLink" class="btn-pill btn-gradient" download>
+                    <svg class="btn-icon" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download updated document
+                </a>
+                <a class="sub-link" onclick="resetApp()">Check another document</a>
+            </div>
         </div>
     </div>
 
@@ -485,7 +979,13 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
+        // App Configuration
+        const APP_CONFIG = {
+            MAX_FILE_SIZE_MB: /*[[${maxFileSizeMb}]]*/ 50,
+            get MAX_FILE_SIZE_BYTES() { return this.MAX_FILE_SIZE_MB * 1024 * 1024; }
+        };
+
         // DOM Elements
         const screens = {
             landing: document.getElementById('landing-screen'),
@@ -502,6 +1002,10 @@
         const progressBar = document.getElementById('progressBar');
         const statusText = document.getElementById('statusText');
         const downloadLink = document.getElementById('downloadLink');
+        const errorText = document.getElementById('errorText');
+
+        // Set initial dynamic text
+        errorText.textContent = `Please upload a valid PDF under ${APP_CONFIG.MAX_FILE_SIZE_MB} MB.`;
 
         let selectedFile = null;
 
@@ -509,13 +1013,10 @@
         function showScreen(screenName) {
             Object.values(screens).forEach(s => {
                 s.classList.remove('active');
-                if (s !== screens[screenName]) {
-                    // Small delay to allow CSS exit transition if needed, though opacity handles it
-                }
             });
             setTimeout(() => {
                 screens[screenName].classList.add('active');
-            }, 50); // Slight delay for smoother transition
+            }, 50); 
         }
 
         function resetApp() {
@@ -554,10 +1055,12 @@
 
         function handleFileSelect(file) {
             if (file.type !== 'application/pdf') {
+                errorText.textContent = `Please upload a valid PDF file.`;
                 showScreen('error');
                 return;
             }
-            if (file.size > 50 * 1024 * 1024) {
+            if (file.size > APP_CONFIG.MAX_FILE_SIZE_BYTES) {
+                errorText.textContent = `File is too large. Please upload a PDF under ${APP_CONFIG.MAX_FILE_SIZE_MB} MB.`;
                 showScreen('error');
                 return;
             }
@@ -568,25 +1071,45 @@
             btnUpload.onclick = processDocument;
         }
 
+        const downloadCounts = {};
+
         // Upload Process
         async function processDocument() {
             if (!selectedFile) return;
 
             showScreen('processing');
             progressBar.style.width = '10%';
-            statusText.textContent = "Extracting document structure...";
+            statusText.style.opacity = '0';
+            setTimeout(() => {
+                statusText.textContent = "Extracting document structure...";
+                statusText.style.opacity = '1';
+            }, 150);
 
             // Simulate progress while waiting for fetch
             let p = 10;
             const progressInterval = setInterval(() => {
-                if (p < 85) {
-                    p += (Math.random() * 5);
+                if (p < 90) {
+                    // Slower progress as it gets closer to 90
+                    const increment = Math.max(0.5, (90 - p) * 0.05);
+                    p += increment;
                     progressBar.style.width = p + '%';
                     
-                    if (p > 30 && p < 60) statusText.textContent = "Verifying facts with AI...";
-                    if (p >= 60) statusText.textContent = "Generating updated PDF...";
+                    if (p > 35 && p < 65 && statusText.textContent !== "Verifying facts with AI...") {
+                        statusText.style.opacity = '0';
+                        setTimeout(() => {
+                            statusText.textContent = "Verifying facts with AI...";
+                            statusText.style.opacity = '1';
+                        }, 300);
+                    }
+                    if (p >= 65 && statusText.textContent !== "Generating updated PDF...") {
+                        statusText.style.opacity = '0';
+                        setTimeout(() => {
+                            statusText.textContent = "Generating updated PDF...";
+                            statusText.style.opacity = '1';
+                        }, 300);
+                    }
                 }
-            }, 800);
+            }, 250);
 
             try {
                 const formData = new FormData();
@@ -601,11 +1124,27 @@
 
                 if (!response.ok) {
                     let errMsg = 'An unexpected server error occurred.';
-                    if (response.status === 422 || response.status === 500) {
+                    if (response.status === 422 || response.status === 500 || response.status === 413) {
                         errMsg = response.headers.get('X-Error-Message') || errMsg;
                     }
                     throw new Error(errMsg);
                 }
+
+                // Process custom updates header
+                let updates = [];
+                const updatesHeader = response.headers.get('X-Document-Updates');
+                if (updatesHeader) {
+                    try {
+                        const jsonString = decodeURIComponent(atob(updatesHeader).split('').map(function(c) {
+                            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                        }).join(''));
+                        updates = JSON.parse(jsonString);
+                    } catch (e) {
+                        console.error('Failed to parse document updates', e);
+                    }
+                }
+                
+                renderReviewItems(updates);
 
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
@@ -614,17 +1153,159 @@
                 
                 setTimeout(() => {
                     downloadLink.href = url;
-                    downloadLink.download = "Updated_" + selectedFile.name;
+                    
+                    // Generate new file name
+                    let baseName = selectedFile.name;
+                    if (baseName.toLowerCase().endsWith('.pdf')) {
+                        baseName = baseName.substring(0, baseName.length - 4);
+                    }
+                    
+                    let newFileName = baseName + "(updated)";
+                    
+                    if (downloadCounts[selectedFile.name] !== undefined) {
+                        downloadCounts[selectedFile.name]++;
+                        newFileName += downloadCounts[selectedFile.name];
+                    } else {
+                        downloadCounts[selectedFile.name] = 0;
+                    }
+                    
+                    downloadLink.download = newFileName + ".pdf";
+                    
+                    // Add to history
+                    const history = JSON.parse(localStorage.getItem('fileHistory') || '[]');
+                    const now = new Date();
+                    history.unshift({
+                        name: selectedFile.name,
+                        date: now.toLocaleDateString() + ' at ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                    });
+                    localStorage.setItem('fileHistory', JSON.stringify(history));
+                    loadHistory();
+                    
                     showScreen('success');
                 }, 600);
 
             } catch (error) {
                 clearInterval(progressInterval);
-                document.getElementById('errorText').textContent = error.message || 'Please upload a valid PDF under 50 MB.';
+                errorText.textContent = error.message || `Please upload a valid PDF under ${APP_CONFIG.MAX_FILE_SIZE_MB} MB.`;
                 showScreen('error');
                 console.error(error);
             }
         }
+
+        function renderReviewItems(updates) {
+            const container = document.getElementById('reviewItemsContainer');
+            const colsHeader = document.getElementById('reviewColsHeader');
+            
+            // Update stats
+            document.querySelector('.stats-pills').innerHTML = `
+                <span class="stat-pill"><strong>${updates.length}</strong> claims checked</span>
+                <span class="stat-pill stat-outdated"><strong>${updates.length}</strong> outdated</span>
+                <span class="stat-pill stat-updated"><strong>${updates.length}</strong> updated</span>
+            `;
+
+            if (updates.length === 0) {
+                colsHeader.style.display = 'none';
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 16px; opacity: 0.5;">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <h3 style="color: var(--text-dark); margin-bottom: 8px;">Document verified successfully</h3>
+                        <p>No outdated facts were found in this document.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            colsHeader.style.display = 'flex';
+            
+            container.innerHTML = updates.map((update, index) => {
+                // simple escape function to prevent XSS
+                const escapeHTML = str => str ? str.replace(/[&<>'"]/g, 
+                    tag => ({
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        "'": '&#39;',
+                        '"': '&quot;'
+                    }[tag] || tag)) : '';
+
+                return `
+                <div class="review-item">
+                    <div class="review-content">
+                        <div class="review-col outdated-col">
+                            <p><del>${escapeHTML(update.originalSentence)}</del></p>
+                            <div class="review-meta">
+                                <span class="page-badge">Outdated Fact</span>
+                            </div>
+                        </div>
+                        <div class="review-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                        <div class="review-col updated-col">
+                            <p><ins>${escapeHTML(update.updatedSentence)}</ins></p>
+                            <div class="review-meta">
+                                <span class="source-text">Source: ${escapeHTML(update.source || 'AI Verified')}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // Sidebar Toggle
+        function toggleHistory() {
+            const sidebar = document.getElementById('historySidebar');
+            sidebar.classList.toggle('open');
+            
+            if (sidebar.classList.contains('open')) {
+                // Add click listener to close when clicking outside
+                setTimeout(() => {
+                    document.addEventListener('click', closeSidebarOutside);
+                }, 10);
+            } else {
+                document.removeEventListener('click', closeSidebarOutside);
+            }
+        }
+        
+        function closeSidebarOutside(e) {
+            const sidebar = document.getElementById('historySidebar');
+            if (!sidebar.contains(e.target) && !e.target.closest('.icon-btn')) {
+                sidebar.classList.remove('open');
+                document.removeEventListener('click', closeSidebarOutside);
+            }
+        }
+
+        // History Loader
+        function loadHistory() {
+            const historyList = document.getElementById('historyList');
+            const history = JSON.parse(localStorage.getItem('fileHistory') || '[]');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<p style="text-align:center; color: var(--text-light); margin-top: 20px;">No documents yet.</p>';
+                return;
+            }
+            
+            historyList.innerHTML = history.map(item => `
+                <a href="#" class="history-item">
+                    <div class="history-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    </div>
+                    <div class="history-details">
+                        <span class="history-name" style="word-break: break-all;">${item.name}</span>
+                        <span class="history-date">${item.date}</span>
+                    </div>
+                </a>
+            `).join('');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadHistory);
     </script>
 </body>
 </html>

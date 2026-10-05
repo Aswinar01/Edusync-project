@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - EduSync</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --text-dark: #2a3136;
+            --text-light: #5f6b74;
+            --glass-bg: rgba(255, 255, 255, 0.2);
+            --glass-highlight: rgba(255, 255, 255, 0.9);
+            --glass-shadow: rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Dynamic Silk Light Background --- */
+        .bg-mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            background: radial-gradient(circle at 15% 50%, rgba(230,235,255,1), transparent 50%),
+                        radial-gradient(circle at 85% 30%, rgba(255,240,230,1), transparent 50%),
+                        radial-gradient(circle at 50% 80%, rgba(240,230,255,1), transparent 50%);
+            background-color: #f8fbff;
+            filter: blur(60px);
+            animation: mesh-shift 20s infinite alternate ease-in-out;
+        }
+        
+        .bg-waves {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            opacity: 0.5;
+            background-image: 
+                radial-gradient(ellipse at top left, rgba(255,255,255,0.8) 0%, transparent 40%),
+                radial-gradient(ellipse at bottom right, rgba(255,255,255,0.8) 0%, transparent 40%);
+            mix-blend-mode: overlay;
+        }
+
+        @keyframes mesh-shift {
+            0% { transform: scale(1.1) translate(2%, 2%); }
+            100% { transform: scale(1.2) translate(-2%, -2%); }
+        }
+
+        /* --- Global Typography --- */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        p, span, a, button, input {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Top Nav */
+        .top-nav {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            z-index: 50;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.7), 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateX(-4px);
+        }
+
+        /* --- Profile Card --- */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .profile-card {
+            width: 90%;
+            max-width: 480px;
+            padding: 50px 40px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(30px) saturate(140%);
+            -webkit-backdrop-filter: blur(30px) saturate(140%);
+            box-shadow: 
+                inset 0 4px 6px rgba(255, 255, 255, 0.7),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.05),
+                0 20px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            text-align: center;
+            /* Reflection under card */
+            -webkit-box-reflect: below 4px linear-gradient(transparent 80%, rgba(255,255,255,0.2));
+            animation: card-appear 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        @keyframes card-appear {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar-container {
+            position: relative;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                inset 0 4px 8px rgba(255, 255, 255, 0.9),
+                0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .avatar-container:hover .avatar {
+            transform: scale(1.05);
+        }
+        
+        .avatar svg {
+            width: 48px;
+            height: 48px;
+            stroke: var(--text-light);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .edit-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background: rgba(230, 240, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 1px solid white;
+        }
+        
+        .edit-badge svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--text-dark);
+            stroke-width: 2;
+        }
+
+        .profile-card h2 {
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+        
+        .profile-card p {
+            color: var(--text-light);
+            font-size: 15px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-light);
+            stroke-width: 1.5;
+            fill: none;
+            pointer-events: none;
+        }
+
+        .glass-input {
+            width: 100%;
+            padding: 16px 20px 16px 52px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-dark);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.05),
+                inset 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .glass-input::placeholder {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 1);
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.05),
+                0 4px 12px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-glass-active {
+            width: 100%;
+            padding: 16px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            background: rgba(230, 240, 255, 0.6);
+            color: var(--text-dark);
+            box-shadow: 
+                inset 0 4px 6px rgba(255, 255, 255, 1),
+                inset 0 -2px 8px rgba(0, 0, 0, 0.05),
+                0 10px 20px rgba(100, 150, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-glass-active:hover {
+            background: rgba(240, 248, 255, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 
+                inset 0 4px 8px rgba(255, 255, 255, 1),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.05),
+                0 15px 30px rgba(100, 150, 255, 0.2);
+        }
+        
+        .btn-danger {
+            background: rgba(255, 230, 230, 0.6);
+            box-shadow: 
+                inset 0 4px 6px rgba(255, 255, 255, 1),
+                inset 0 -2px 8px rgba(0, 0, 0, 0.05),
+                0 10px 20px rgba(255, 100, 100, 0.15);
+            color: #d94444;
+            margin-top: 20px;
+        }
+        
+        .btn-danger:hover {
+            background: rgba(255, 240, 240, 0.8);
+            box-shadow: 
+                inset 0 4px 8px rgba(255, 255, 255, 1),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.05),
+                0 15px 30px rgba(255, 100, 100, 0.2);
+        }
+
+        /* --- Modal System --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .glass-modal {
+            width: 360px;
+            padding: 30px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            transform: scale(0.9);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .modal-overlay.active .glass-modal {
+            transform: scale(1);
+        }
+        .glass-modal h3 {
+            margin-bottom: 12px;
+            font-size: 24px;
+        }
+        .glass-modal p {
+            color: var(--text-light);
+            margin-bottom: 24px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .glass-modal .btn-glass-active {
+            padding: 12px 30px;
+            font-size: 16px;
+            margin-top: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-card {
+                padding: 30px 20px;
+            }
+            .profile-card h2 {
+                font-size: 24px;
+            }
+            .glass-modal {
+                width: 90%;
+            }
+            .top-nav {
+                top: 20px;
+                left: 20px;
+            }
+            .back-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Backgrounds -->
+    <div class="bg-mesh"></div>
+    <div class="bg-waves"></div>
+
+    <div class="top-nav">
+        <a href="javascript:history.back()" class="back-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Go Back
+        </a>
+    </div>
+
+    <!-- Custom Modal -->
+    <div class="modal-overlay" id="customModal">
+        <div class="glass-modal">
+            <h3 id="modalTitle">Notice</h3>
+            <p id="modalMessage">Message goes here</p>
+            <button class="btn-glass-active" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div class="modal-overlay" id="transferModal">
+        <div class="glass-modal" style="width: 90%; max-width: 480px;">
+            <h3 style="margin-bottom: 16px;">Transfer History?</h3>
+            <p style="text-align: left; margin-bottom: 24px; font-size: 14.5px;">
+                Do you wish to transfer all of your current temporary browser history to your new account? This ensures you won't lose any of your recent work.
+            </p>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-glass-active" style="flex: 1; background: rgba(255,255,255,0.4); color: var(--text-dark); border-color: rgba(255,255,255,0.5);" onclick="continueWithoutTransfer()">No, just log in</button>
+                <button class="btn-glass-active" style="flex: 1;" onclick="continueWithTransfer()">Yes, Transfer Data</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="profile-card">
+            
+            <div class="profile-header">
+                <div class="avatar-container" onclick="document.getElementById('profileUpload').click()">
+                    <div class="avatar">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="edit-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    </div>
+                    <input type="file" id="profileUpload" style="display: none;" accept="image/*">
+                </div>
+                <h2 id="profileTitle">Profile Settings</h2>
+                <p id="profileSubtitle">Update your personal information</p>
+            </div>
+            
+            <form id="profileForm" novalidate>
+                <div class="input-group">
+                    <svg class="input-icon" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <input type="text" id="nameInput" class="glass-input" placeholder="Full Name">
+                </div>
+                
+                <div class="input-group">
+                    <svg class="input-icon" viewBox="0 0 24 24">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <input type="email" id="emailInput" class="glass-input" placeholder="Email">
+                </div>
+                
+                <div class="input-group">
+                    <svg class="input-icon" viewBox="0 0 24 24">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <input type="password" id="passwordInput" class="glass-input" placeholder="New Password">
+                </div>
+                
+                <button type="submit" class="btn-glass-active">
+                    Save Changes
+                </button>
+                
+                <a href="/auth" class="btn-glass-active btn-danger" onclick="localStorage.removeItem('currentUser')">
+                    Log Out
+                </a>
+            </form>
+            
+            <!-- Guest View -->
+            <div id="guestView" style="display: none; flex-direction: column; align-items: center; width: 100%;">
+                <button class="btn-glass-active" onclick="openTransferModal()">
+                    Sign In or Sign Up
+                </button>
+                <a href="/auth" class="btn-glass-active btn-danger" onclick="localStorage.removeItem('currentUser')">
+                    Exit Guest Mode
+                </a>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser === 'Guest') {
+                document.getElementById('profileTitle').textContent = 'Guest Account';
+                document.getElementById('profileSubtitle').textContent = 'Temporary browser storage';
+                document.getElementById('profileForm').style.display = 'none';
+                document.getElementById('guestView').style.display = 'flex';
+            }
+        });
+
+        function openTransferModal() {
+            document.getElementById('transferModal').classList.add('active');
+        }
+
+        function closeTransferModal() {
+            document.getElementById('transferModal').classList.remove('active');
+        }
+
+        function continueWithTransfer() {
+            localStorage.setItem('transferData', 'true');
+            window.location.href = '/auth';
+        }
+
+        function continueWithoutTransfer() {
+            localStorage.setItem('transferData', 'false');
+            window.location.href = '/auth';
+        }
+
+        function showModal(title, message) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('customModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.remove('active');
+        }
+
+        document.getElementById('customModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.getElementById('transferModal').addEventListener('click', function(e) {
+            if (e.target === this) closeTransferModal();
+        });
+
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('nameInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
+            
+            if (!name) {
+                showModal('Error', 'Full Name cannot be empty.');
+                return;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email) {
+                showModal('Error', 'Email address is required.');
+                return;
+            }
+            if (!emailRegex.test(email)) {
+                showModal('Invalid Email', 'Please enter a valid email address.');
+                return;
+            }
+            
+            // If validation passes
+            showModal('Success', 'Profile updated successfully!');
+        });
+    </script>
+</body>
+</html>

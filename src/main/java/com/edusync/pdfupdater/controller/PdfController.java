@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Base64;
+import java.nio.charset.StandardCharsets;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,9 +27,29 @@ public class PdfController {
         this.pdfProcessorService = pdfProcessorService;
     }
 
+    @org.springframework.beans.factory.annotation.Value("${spring.servlet.multipart.max-file-size:50MB}")
+    private String maxFileSize;
+
     @GetMapping("/")
-    public String index() {
+    public String landing() {
+        return "landing";
+    }
+
+    @GetMapping("/app")
+    public String index(org.springframework.ui.Model model) {
+        String limit = maxFileSize.toUpperCase().replace("MB", "").trim();
+        model.addAttribute("maxFileSizeMb", limit);
         return "index";
+    }
+
+    @GetMapping("/auth")
+    public String auth() {
+        return "auth";
+    }
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
     }
 
     @PostMapping("/upload")
@@ -47,7 +71,13 @@ public class PdfController {
         }
 
         try {
-            byte[] updatedPdf = pdfProcessorService.processPdf(file.getInputStream());
+            PdfProcessorService.ProcessResult result = pdfProcessorService.processPdf(file.getInputStream());
+            byte[] updatedPdf = result.getPdfBytes();
+
+            // Serialize updates to JSON and Base64 encode
+            ObjectMapper objectMapper = new ObjectMapper();
+            String updatesJson = objectMapper.writeValueAsString(result.getUpdates());
+            String encodedUpdates = Base64.getEncoder().encodeToString(updatesJson.getBytes(StandardCharsets.UTF_8));
 
             // Sanitize filename to prevent HTTP Response Splitting and Path Traversal
             String originalName = file.getOriginalFilename();
@@ -56,6 +86,8 @@ public class PdfController {
             
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"updated_" + sanitizedFilename + "\"")
+                    .header("X-Document-Updates", encodedUpdates)
+                    .header("Access-Control-Expose-Headers", "X-Document-Updates")
                     .contentType(MediaType.APPLICATION_PDF)
                     .body(updatedPdf);
 
@@ -71,5 +103,13 @@ public class PdfController {
                     .header("X-Error-Message", "An unexpected error occurred on the server.")
                     .build();
         }
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
+    public ResponseEntity<String> handleMaxSizeException(org.springframework.web.multipart.MaxUploadSizeExceededException exc) {
+        log.warn("File size exceeded limit: " + exc.getMessage());
+        return ResponseEntity.status(org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE)
+                .header("X-Error-Message", "File is too large. Please upload a PDF under " + maxFileSize + ".")
+                .build();
     }
 }

@@ -12,11 +12,25 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class PdfProcessorService {
+
+    public static class ProcessResult {
+        private final byte[] pdfBytes;
+        private final List<UpdateResponse.SentenceUpdate> updates;
+
+        public ProcessResult(byte[] pdfBytes, List<UpdateResponse.SentenceUpdate> updates) {
+            this.pdfBytes = pdfBytes;
+            this.updates = updates;
+        }
+
+        public byte[] getPdfBytes() { return pdfBytes; }
+        public List<UpdateResponse.SentenceUpdate> getUpdates() { return updates; }
+    }
 
     private final AiService aiService;
 
@@ -24,7 +38,7 @@ public class PdfProcessorService {
         this.aiService = aiService;
     }
 
-    public byte[] processPdf(InputStream pdfInputStream) throws Exception {
+    public ProcessResult processPdf(InputStream pdfInputStream) throws Exception {
         // 1. Extract semantic HTML structure from the PDF
         log.info("Step 1: Extracting text from PDF...");
         String extractedHtml;
@@ -143,7 +157,7 @@ public class PdfProcessorService {
             builder.toStream(baos);
             builder.run();
             log.info("Step 5: PDF generated successfully (" + baos.size() + " bytes)");
-            return baos.toByteArray();
+            return new ProcessResult(baos.toByteArray(), new ArrayList<>(uniqueUpdates.values()));
         }
     }
 

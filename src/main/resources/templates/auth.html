@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Account - EduSync</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --text-dark: #2a3136;
+            --text-light: #5f6b74;
+            --glass-bg: rgba(255, 255, 255, 0.2);
+            --glass-highlight: rgba(255, 255, 255, 0.9);
+            --glass-shadow: rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Dynamic Silk Light Background (From index.html) --- */
+        .bg-mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            background: radial-gradient(circle at 15% 50%, rgba(230,235,255,1), transparent 50%),
+                        radial-gradient(circle at 85% 30%, rgba(255,240,230,1), transparent 50%),
+                        radial-gradient(circle at 50% 80%, rgba(240,230,255,1), transparent 50%);
+            background-color: #f8fbff;
+            filter: blur(60px);
+            animation: mesh-shift 20s infinite alternate ease-in-out;
+        }
+        
+        .bg-waves {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            opacity: 0.5;
+            background-image: 
+                radial-gradient(ellipse at top left, rgba(255,255,255,0.8) 0%, transparent 40%),
+                radial-gradient(ellipse at bottom right, rgba(255,255,255,0.8) 0%, transparent 40%);
+            mix-blend-mode: overlay;
+        }
+
+        @keyframes mesh-shift {
+            0% { transform: scale(1.1) translate(2%, 2%); }
+            100% { transform: scale(1.2) translate(-2%, -2%); }
+        }
+
+        /* --- Global Typography --- */
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
+        }
+
+        p, span, a, button, input {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Top Nav */
+        .top-nav {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            z-index: 50;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.7), 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateX(-4px);
+        }
+
+        /* --- Auth Card --- */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .auth-card {
+            width: 90%;
+            max-width: 440px;
+            padding: 50px 40px 40px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(30px) saturate(140%);
+            -webkit-backdrop-filter: blur(30px) saturate(140%);
+            box-shadow: 
+                inset 0 4px 6px rgba(255, 255, 255, 0.7),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.05),
+                0 20px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            text-align: center;
+            /* Reflection under card */
+            -webkit-box-reflect: below 4px linear-gradient(transparent 80%, rgba(255,255,255,0.2));
+            animation: card-appear 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        @keyframes card-appear {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .auth-card h2 {
+            font-size: 32px;
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-light);
+            stroke-width: 1.5;
+            fill: none;
+            pointer-events: none;
+        }
+
+        .glass-input {
+            width: 100%;
+            padding: 16px 20px 16px 52px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-dark);
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.05),
+                inset 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .glass-input::placeholder {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 1);
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.05),
+                0 4px 12px rgba(255, 255, 255, 0.4);
+        }
+
+        /* --- Auth Button --- */
+        .btn-glass-active {
+            width: 100%;
+            padding: 16px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            /* Blue tinted glass */
+            background: rgba(230, 240, 255, 0.6);
+            color: var(--text-dark);
+            box-shadow: 
+                inset 0 4px 6px rgba(255, 255, 255, 1),
+                inset 0 -2px 8px rgba(0, 0, 0, 0.05),
+                0 10px 20px rgba(100, 150, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-glass-active:hover {
+            background: rgba(240, 248, 255, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 
+                inset 0 4px 8px rgba(255, 255, 255, 1),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.05),
+                0 15px 30px rgba(100, 150, 255, 0.2);
+        }
+
+        .auth-footer {
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .auth-footer a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 4px;
+            border-bottom: 1px solid rgba(42, 49, 54, 0.3);
+            transition: border-color 0.2s;
+        }
+
+        .auth-footer a:hover {
+            border-bottom-color: var(--text-dark);
+        }
+        /* --- Modal System --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .glass-modal {
+            width: 360px;
+            padding: 30px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            transform: scale(0.9);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .modal-overlay.active .glass-modal {
+            transform: scale(1);
+        }
+        .glass-modal h3 {
+            margin-bottom: 12px;
+            font-size: 24px;
+        }
+        .glass-modal p {
+            color: var(--text-light);
+            margin-bottom: 24px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .glass-modal .btn-glass-active {
+            padding: 12px 30px;
+            font-size: 16px;
+            margin-top: 0;
+        }
+
+        @media (max-width: 768px) {
+            .auth-card {
+                padding: 30px 20px;
+            }
+            .auth-card h2 {
+                font-size: 26px;
+            }
+            .glass-modal {
+                width: 90%;
+            }
+            .top-nav {
+                top: 20px;
+                left: 20px;
+            }
+            .back-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Backgrounds matching index.html perfectly -->
+    <div class="bg-mesh"></div>
+    <div class="bg-waves"></div>
+
+    <div class="top-nav">
+        <a href="javascript:history.back()" class="back-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Go Back
+        </a>
+    </div>
+
+    <!-- Custom Modal -->
+    <div class="modal-overlay" id="customModal">
+        <div class="glass-modal">
+            <h3 id="modalTitle">Notice</h3>
+            <p id="modalMessage">Message goes here</p>
+            <button class="btn-glass-active" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <!-- Guest Modal -->
+    <div class="modal-overlay" id="guestModal">
+        <div class="glass-modal" style="width: 90%; max-width: 480px;">
+            <h3 style="margin-bottom: 16px;">Guest Mode Notice</h3>
+            <p style="text-align: left; margin-bottom: 12px; font-size: 14.5px;">
+                By proceeding without an account, your recently processed files will be <strong>temporarily stored</strong> in your browser's data. This information may be lost if you clear your browser cache or switch devices.
+            </p>
+            <p style="text-align: left; margin-bottom: 24px; font-size: 14.5px;">
+                You will still be able to sign in or sign up later from the profile section. Once you create an account, all of your temporarily stored history will be seamlessly transferred and permanently secured in our database.
+            </p>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-glass-active" style="flex: 1; background: rgba(255,255,255,0.4); color: var(--text-dark); border-color: rgba(255,255,255,0.5);" onclick="closeGuestModal()">Cancel</button>
+                <button class="btn-glass-active" style="flex: 1;" onclick="continueAsGuest()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="auth-card">
+            <h2 id="authTitle">Sign in to your account</h2>
+            
+            <form id="authForm" novalidate>
+                <!-- Name input (hidden by default for Sign In) -->
+                <div class="input-group" id="nameGroup" style="display: none;">
+                    <svg class="input-icon" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <input type="text" class="glass-input" id="nameInput" placeholder="Full Name">
+                </div>
+                
+                <div class="input-group">
+                    <svg class="input-icon" viewBox="0 0 24 24">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <input type="email" id="emailInput" class="glass-input" placeholder="Email">
+                </div>
+                
+                <div class="input-group">
+                    <svg class="input-icon" viewBox="0 0 24 24">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <input type="password" id="passwordInput" class="glass-input" placeholder="Password">
+                </div>
+                
+                <button type="submit" class="btn-glass-active" id="authSubmitBtn">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="auth-footer">
+                <span id="footerText">Don't have an account?</span> 
+                <a href="#" onclick="toggleAuthMode(event)" id="toggleAuthBtn">Sign up</a>
+            </div>
+            
+            <div class="auth-footer" style="margin-top: 15px;">
+                <a href="#" onclick="showGuestModal(event)" style="font-size: 13px; color: var(--text-light); border-bottom: 1px solid transparent; opacity: 0.8;">Use without an account</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isLogin = true;
+
+        function toggleAuthMode(e) {
+            e.preventDefault();
+            isLogin = !isLogin;
+            
+            const title = document.getElementById('authTitle');
+            const nameGroup = document.getElementById('nameGroup');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const footerText = document.getElementById('footerText');
+            const toggleBtn = document.getElementById('toggleAuthBtn');
+
+            if (isLogin) {
+                // Switch to Sign In
+                title.textContent = "Sign in to your account";
+                nameGroup.style.display = "none";
+                submitBtn.textContent = "Sign In";
+                footerText.textContent = "Don't have an account?";
+                toggleBtn.textContent = "Sign up";
+            } else {
+                // Switch to Sign Up
+                title.textContent = "Create your account";
+                nameGroup.style.display = "block";
+                submitBtn.textContent = "Sign Up";
+                footerText.textContent = "Already have an account?";
+                toggleBtn.textContent = "Sign in";
+            }
+        }
+
+        function showModal(title, message) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('customModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.remove('active');
+        }
+
+        function showGuestModal(e) {
+            e.preventDefault();
+            document.getElementById('guestModal').classList.add('active');
+        }
+
+        function closeGuestModal() {
+            document.getElementById('guestModal').classList.remove('active');
+        }
+
+        document.getElementById('customModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.getElementById('guestModal').addEventListener('click', function(e) {
+            if (e.target === this) closeGuestModal();
+        });
+        
+        function continueAsGuest() {
+            localStorage.setItem('currentUser', 'Guest');
+            window.location.href = '/app';
+        }
+
+        document.getElementById('authForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('nameInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
+            const password = document.getElementById('passwordInput').value.trim();
+            
+            if (!isLogin && !name) {
+                showModal('Error', 'Full Name cannot be empty.');
+                return;
+            }
+            
+            if (!email) {
+                showModal('Error', 'Email address is required.');
+                return;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showModal('Invalid Email', 'Please enter a valid email address.');
+                return;
+            }
+            
+            if (!password) {
+                showModal('Error', 'Password is required.');
+                return;
+            }
+            
+            // Validation passed!
+            localStorage.setItem('currentUser', email);
+            
+            // Handle transfer logic
+            const transfer = localStorage.getItem('transferData');
+            if (transfer === 'false') {
+                localStorage.removeItem('fileHistory');
+            }
+            localStorage.removeItem('transferData');
+            
+            // Proceed to index
+            window.location.href = '/app';
+        });
+    </script>
+</body>
+</html>

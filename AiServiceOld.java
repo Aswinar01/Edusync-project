@@ -1,4 +1,4 @@
-package com.edusync.pdfupdater.service;
+﻿package com.edusync.pdfupdater.service;
 
 import com.edusync.pdfupdater.model.UpdateResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -141,7 +141,7 @@ public class AiService {
             String jsonBody = objectMapper.writeValueAsString(requestBody);
 
             for (int attempt = 1; attempt <= 2; attempt++) {
-                log.info("Calling Groq API (" + groqModel + ", attempt " + attempt + "/2)");
+                log.info("Calling Groq API (llama-3.3-70b, attempt " + attempt + "/2)");
 
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create("https://api.groq.com/openai/v1/chat/completions"))

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSync - Keep Your Documents Factual</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --text-dark: #2a3136;
+            --text-light: #5f6b74;
+            --accent: #6b4ee6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fbff;
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow: hidden; /* Single page layout */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* --- Dynamic Silk Light Background --- */
+        .bg-mesh {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+            background: radial-gradient(circle at 15% 50%, rgba(230,235,255,1), transparent 50%),
+                        radial-gradient(circle at 85% 30%, rgba(255,240,230,1), transparent 50%),
+                        radial-gradient(circle at 50% 80%, rgba(240,230,255,1), transparent 50%);
+            filter: blur(60px);
+            animation: mesh-shift 20s infinite alternate ease-in-out;
+        }
+        
+        .bg-waves {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; opacity: 0.5;
+            background-image: radial-gradient(ellipse at top left, rgba(255,255,255,0.8) 0%, transparent 40%),
+                              radial-gradient(ellipse at bottom right, rgba(255,255,255,0.8) 0%, transparent 40%);
+            mix-blend-mode: overlay;
+        }
+
+        @keyframes mesh-shift {
+            0% { transform: scale(1.1) translate(2%, 2%); }
+            100% { transform: scale(1.2) translate(-2%, -2%); }
+        }
+
+        /* --- Typography --- */
+        h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 500; letter-spacing: -0.02em; }
+
+        /* --- Top Navbar --- */
+        .navbar {
+            position: absolute; top: 0; left: 0; right: 0; height: 100px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 40px; z-index: 10;
+        }
+        .nav-logo { 
+            font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: var(--text-dark); 
+            text-decoration: none; 
+            user-select: none; outline: none; -webkit-tap-highlight-color: transparent; cursor: pointer;
+        }
+        .nav-btn {
+            text-decoration: none; padding: 10px 28px; border-radius: 40px;
+            background: rgba(255, 255, 255, 0.5); color: var(--text-dark); font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.9); transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.9); transform: translateY(-1px); }
+
+        /* --- Hero Content --- */
+        .hero { text-align: center; max-width: 800px; padding: 20px; z-index: 10; position: relative; }
+
+        .hero h1 { font-size: clamp(60px, 8vw, 96px); margin-bottom: 24px; line-height: 1.05; color: #1a1e21; }
+        .hero p { font-size: clamp(18px, 2.2vw, 22px); color: var(--text-light); line-height: 1.6; max-width: 600px; margin: 0 auto 40px; font-weight: 300; }
+        
+        .btn-glass-active {
+            padding: 16px 40px; border-radius: 40px; font-size: 18px; font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.8); cursor: pointer; position: relative; transition: all 0.3s ease; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.8); color: var(--text-dark);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+        }
+        .btn-glass-active:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+        .btn-glass-active svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        .hero-hint {
+            margin-top: 30px;
+            font-size: 15px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* --- Footer Links --- */
+        .footer {
+            position: absolute; bottom: 40px; left: 0; right: 0;
+            display: flex; justify-content: center; gap: 30px; z-index: 10;
+        }
+        .footer a {
+            color: var(--text-light); text-decoration: none; font-size: 15px; transition: color 0.2s; cursor: pointer;
+        }
+        .footer a:hover { color: var(--text-dark); }
+
+        /* --- Dust Particles Animation --- */
+        .dust {
+            position: absolute;
+            background: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            top: 0; left: 0;
+            box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent), 0 0 24px var(--accent);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
+
+        /* --- Info Carousel Modal --- */
+        .carousel-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+            z-index: 2000; display: none; align-items: center; justify-content: center; gap: 20px;
+            opacity: 0; transition: opacity 0.5s ease;
+        }
+        .carousel-overlay.active { display: flex; opacity: 1; }
+        
+        .carousel-window {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 30px; width: 90%; max-width: 850px; height: 55vh; min-height: 400px;
+            position: relative; overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.1);
+            transform: scale(0.8) translateY(20px); transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .carousel-overlay.active .carousel-window { transform: scale(1) translateY(0); }
+
+        .carousel-close {
+            position: absolute; top: 20px; right: 25px; background: none; border: none; font-size: 32px;
+            cursor: pointer; color: var(--text-dark); opacity: 0.5; z-index: 10;
+        }
+        .carousel-close:hover { opacity: 1; }
+        
+        .carousel-tabs {
+            position: absolute; top: 25px; left: 30px; z-index: 10; display: flex; gap: 10px; align-items: center;
+        }
+        .carousel-tab {
+            background: rgba(255,255,255,0.8); border: 1px solid transparent; color: var(--text-light);
+            padding: 8px 18px; border-radius: 20px; font-weight: 500; font-size: 15px; cursor: pointer;
+            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+        .carousel-tab:hover { background: #fff; color: var(--text-dark); }
+        .carousel-tab.active {
+            border-color: var(--accent); color: var(--accent); background: #fff;
+        }
+
+        .carousel-track {
+            display: flex; width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        .carousel-slide {
+            min-width: 100%; height: 100%; padding: 90px 50px 30px;
+            display: flex; flex-direction: column; justify-content: flex-start; align-items: center; overflow: hidden;
+        }
+
+        .carousel-slide h2 { font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 700; margin-bottom: 25px; color: var(--text-dark); text-align: center; }
+        .carousel-slide h3 { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark); }
+        .carousel-slide p, .carousel-slide li { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 400; line-height: 1.6; color: var(--text-light); margin-bottom: 12px; }
+        .carousel-slide strong { font-weight: 600; color: var(--text-dark); }
+        
+        /* Grid for features inside slide */
+        .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 600px; }
+        .feature-item { background: rgba(255,255,255,0.4); padding: 12px 18px; border-radius: 12px; font-weight: 500; display: flex; align-items: center; gap: 10px; font-size: 15px; }
+        .feature-item svg { width: 20px; stroke: var(--accent); fill: none; stroke-width: 2; flex-shrink: 0; }
+        
+        /* --- Text Modals --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(5px);
+            z-index: 3000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-glass {
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 24px; padding: 40px;
+            max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;
+            transform: scale(0.95); transition: transform 0.3s; box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+        }
+        .modal-overlay.active .modal-glass { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 16px; }
+        .modal-header h3 { font-size: 24px; margin:0; }
+        .modal-close { background: none; border: none; font-size: 32px; cursor: pointer; color: var(--text-dark); opacity: 0.5; }
+        .modal-close:hover { opacity: 1; }
+        .modal-body p { margin-bottom: 16px; line-height: 1.6; color: var(--text-light); }
+        .modal-body strong { color: var(--text-dark); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-mesh"></div>
+    <div class="bg-waves"></div>
+
+    <nav class="navbar">
+        <a href="#" class="nav-logo" id="edusync-trigger" title="Double tap me!">EduSync</a>
+        <a href="/auth" class="nav-btn">Sign In</a>
+    </nav>
+
+    <div class="hero">
+        <h1>Keep your<br>documents factual.</h1>
+        <p>AI-powered fact-checking that verifies claims, sources, and accuracy so you can trust every document.</p>
+        
+        <a href="/auth" class="btn-glass-active">
+            <span>Get Started</span>
+            <svg viewBox="0 0 24 24">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </a>
+        
+        <div class="hero-hint">
+            Double-tap EduSync to learn more
+        </div>
+    </div>
+
+    <footer class="footer">
+        <a onclick="openTextModal('privacy')">Privacy Policy</a>
+        <a onclick="openTextModal('terms')">Terms of Service</a>
+        <a onclick="openTextModal('contact')">Contact</a>
+    </footer>
+
+    <!-- More Info Carousel Modal (triggered by double tap) -->
+    <div class="carousel-overlay" id="carouselOverlay">
+
+        <div class="carousel-window" id="carouselWindow">
+            <div class="carousel-tabs">
+                <button class="carousel-tab active" onclick="setCarousel(0)">How it works</button>
+                <button class="carousel-tab" onclick="setCarousel(1)">Features</button>
+                <button class="carousel-tab" onclick="setCarousel(2)">Accounts</button>
+                <button class="carousel-tab" onclick="setCarousel(3)">FAQ</button>
+            </div>
+            <button class="carousel-close" onclick="closeCarousel()">&times;</button>
+            
+            <div class="carousel-track" id="carouselTrack">
+                <!-- Slide 1: How it works -->
+                <div class="carousel-slide">
+                    <h2>How it works</h2>
+                    <div style="max-width: 500px; width: 100%; text-align: center;">
+                        <p><strong>1. Upload:</strong> Drop your PDF into the clean upload zone.</p>
+                        <p><strong>2. AI Verification:</strong> Our AI extracts text, checks facts, and verifies sources in seconds.</p>
+                        <p><strong>3. Download:</strong> Get your updated, fact-checked document ready to use.</p>
+                    </div>
+                </div>
+                
+                <!-- Slide 2: Features -->
+                <div class="carousel-slide">
+                    <h2>Features</h2>
+                    <div class="feature-grid">
+                        <div class="feature-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>Precise Fact Checking</div>
+                        <div class="feature-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Fast Processing</div>
+                        <div class="feature-item"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Privacy First</div>
+                        <div class="feature-item"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>Clean & Simple</div>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Accounts -->
+                <div class="carousel-slide">
+                    <h2>Accounts</h2>
+                    <div style="max-width: 650px; width: 100%; text-align: center;">
+                        <h3>Do I need an account?</h3>
+                        <p>You can use EduSync with or without an account!</p>
+                        <p><strong>With an account:</strong> All your previous files and fact-checking history will be securely stored in our database, accessible from anywhere.</p>
+                        <p><strong>Without an account:</strong> History is stored temporarily in your browser and may be lost if you clear data or log out.</p>
+                        <p style="font-size: 14px; margin-top: 20px; color: var(--accent);"><em>Pro tip: You can sign up later from a guest account in settings, and all your browser-stored history will be seamlessly transferred to our database!</em></p>
+                    </div>
+                </div>
+
+                <!-- Slide 4: FAQ -->
+                <div class="carousel-slide">
+                    <h2>Frequently Asked Questions</h2>
+                    <div class="custom-scrollbar" style="max-width: 650px; width: 100%; text-align: left; overflow-y: auto; padding-right: 15px; max-height: calc(100% - 20px);">
+                        
+                        <div style="margin-bottom: 15px; background: rgba(255,255,255,0.4); padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                            <h3>What file types are supported?</h3>
+                            <p style="margin-bottom: 0;">Currently PDF documents.</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px; background: rgba(255,255,255,0.4); padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                            <h3>Is my document stored?</h3>
+                            <p style="margin-bottom: 0;">No. Files are processed and automatically deleted after a short period.</p>
+                        </div>
+
+                        <div style="margin-bottom: 15px; background: rgba(255,255,255,0.4); padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                            <h3>How accurate is the fact-checking?</h3>
+                            <p style="margin-bottom: 0;">The AI cross-checks claims against reliable sources for high accuracy.</p>
+                        </div>
+
+                        <div style="background: rgba(255,255,255,0.4); padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                            <h3>Is it free to use?</h3>
+                            <p style="margin-bottom: 0;">Yes, you can get started for free.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Text Modals for Footer -->
+    <div class="modal-overlay" id="textModalOverlay" onclick="closeTextModal()">
+        <div class="modal-glass" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="textModalTitle">Title</h3>
+                <button class="modal-close" onclick="closeTextModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="textModalBody">
+                Content
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Carousel Logic ---
+        let currentSlide = 0;
+        const totalSlides = 4;
+        const track = document.getElementById('carouselTrack');
+        const tabs = document.querySelectorAll('.carousel-tab');
+        
+        function setCarousel(index) {
+            currentSlide = index;
+            if (currentSlide < 0) currentSlide = totalSlides - 1;
+            if (currentSlide >= totalSlides) currentSlide = 0;
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            tabs.forEach((tab, i) => {
+                if(i === currentSlide) tab.classList.add('active');
+                else tab.classList.remove('active');
+            });
+        }
+        
+        function moveCarousel(dir) {
+            setCarousel(currentSlide + dir);
+        }
+
+        // --- Dust Particle Animation & Open Carousel ---
+        const badge = document.getElementById('edusync-trigger');
+        const carouselOverlay = document.getElementById('carouselOverlay');
+
+        // Prevent selection of text during double tap
+        badge.addEventListener('mousedown', (e) => {
+            if (e.detail > 1) {
+                e.preventDefault();
+            }
+        });
+
+        badge.addEventListener('dblclick', (e) => {
+            const rect = badge.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+            
+            const windowX = window.innerWidth / 2;
+            const windowY = window.innerHeight / 2;
+            
+            const durationMs = 1200;
+            const startTime = Date.now();
+            
+            // Continuous spawner
+            const spawner = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                if (elapsed > durationMs) {
+                    clearInterval(spawner);
+                    return;
+                }
+                
+                // Increase number of particles to build up window
+                const progress = elapsed / durationMs;
+                const spawnRate = Math.floor(1 + progress * 10); 
+                
+                for(let i=0; i < spawnRate; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'dust';
+                    
+                    // Particles are more visible
+                    const size = 2 + Math.random() * 4; 
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    
+                    document.body.appendChild(particle);
+                    
+                    // Wander outwards then converge to center
+                    const wanderRadius = 150 + progress * 600;
+                    const angle = Math.random() * Math.PI * 2;
+                    const wanderX = startX + Math.cos(angle) * wanderRadius;
+                    const wanderY = startY + Math.sin(angle) * wanderRadius;
+                    
+                    const pDuration = 500 + Math.random() * 300; 
+                    
+                    const animation = particle.animate([
+                        { transform: `translate(${startX}px, ${startY}px)`, opacity: 0 },
+                        { transform: `translate(${wanderX}px, ${wanderY}px)`, opacity: 0.8, offset: 0.4 },
+                        { transform: `translate(${windowX}px, ${windowY}px)`, opacity: 0 }
+                    ], {
+                        duration: pDuration,
+                        easing: 'ease-in-out',
+                        fill: 'forwards'
+                    });
+                    
+                    animation.onfinish = () => particle.remove();
+                }
+            }, 50);
+            
+            // Open carousel as the mass of particles converges at the end
+            setTimeout(() => {
+                carouselOverlay.style.display = 'flex';
+                setTimeout(() => carouselOverlay.classList.add('active'), 10);
+            }, durationMs + 200);
+        });
+
+        function closeCarousel() {
+            carouselOverlay.classList.remove('active');
+            setTimeout(() => carouselOverlay.style.display = 'none', 500);
+        }
+
+        // Close carousel when clicking outside the window
+        carouselOverlay.addEventListener('click', (e) => {
+            if (e.target === carouselOverlay) {
+                closeCarousel();
+            }
+        });
+
+        // Add drag/swipe logic for carousel
+        let startX = 0;
+        let isDragging = false;
+        
+        track.addEventListener('mousedown', (e) => {
+            startX = e.clientX;
+            isDragging = true;
+        });
+        
+        track.addEventListener('mouseup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const endX = e.clientX;
+            if (startX - endX > 50) moveCarousel(1);
+            else if (endX - startX > 50) moveCarousel(-1);
+        });
+
+        // Touch events for mobile swiping
+        track.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+        
+        track.addEventListener('touchend', (e) => {
+            const endX = e.changedTouches[0].clientX;
+            if (startX - endX > 50) moveCarousel(1);
+            else if (endX - startX > 50) moveCarousel(-1);
+        });
+
+        // --- Text Modals ---
+        function openTextModal(type) {
+            const title = document.getElementById('textModalTitle');
+            const body = document.getElementById('textModalBody');
+            
+            if (type === 'privacy') {
+                title.textContent = 'Privacy Policy';
+                body.innerHTML = '<p><strong>1. Data Collection:</strong> We do not permanently store your documents. All uploaded PDFs are processed securely in memory and immediately discarded after fact-checking.</p><p><strong>2. Usage Data:</strong> We may collect anonymous usage metrics to improve our AI verification model and service reliability.</p><p><strong>3. Third-party Services:</strong> We use secure, industry-standard AI APIs to verify factual claims. Your document text is transmitted securely and is strictly never used to train public models.</p>';
+            } else if (type === 'terms') {
+                title.textContent = 'Terms of Service';
+                body.innerHTML = '<p><strong>1. Acceptance of Terms:</strong> By using EduSync, you agree to these terms. If you disagree with any part, you may not use our service.</p><p><strong>2. Accuracy of AI:</strong> While we strive for high accuracy, AI fact-checking is an assistive tool and is not flawless. You are solely responsible for verifying the final output before publishing or submitting your documents.</p><p><strong>3. Acceptable Use:</strong> You agree not to upload illegal, malicious, or highly sensitive confidential documents.</p>';
+            } else if (type === 'contact') {
+                title.textContent = 'Contact Us';
+                body.innerHTML = '<p>Have questions, feedback, or need support? We are here to help!</p><p><strong>Email:</strong> support@edusync.com</p><p><strong>Phone:</strong> 9747704043</p><p><strong>Address:</strong> MCA, CET, Trivandrum</p>';
+            }
+            
+            const overlay = document.getElementById('textModalOverlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.add('active'), 10);
+        }
+
+        function closeTextModal() {
+            const overlay = document.getElementById('textModalOverlay');
+            overlay.classList.remove('active');
+            setTimeout(() => overlay.style.display = 'none', 300);
+        }
+    </script>
+</body>
+</html>
