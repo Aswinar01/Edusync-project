@@ -21,6 +21,9 @@ public class AuthController {
     @Autowired
     private OtpService otpService;
 
+    @Autowired
+    private com.edusync.pdfupdater.repository.DocumentHistoryRepository documentHistoryRepository;
+
     @PostMapping("/send-otp")
     public ResponseEntity<?> sendOtp(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
@@ -150,5 +153,20 @@ public class AuthController {
             return ResponseEntity.status(400).body(Map.of("error", "Email is already taken by another account."));
         }
         return ResponseEntity.ok(Map.of("message", "Profile updated successfully"));
+    }
+
+    @DeleteMapping("/delete")
+    @org.springframework.transaction.annotation.Transactional
+    public ResponseEntity<?> deleteAccount(HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "Not authenticated"));
+        }
+        
+        documentHistoryRepository.deleteAllByUserId(userId);
+        userRepository.deleteById(userId);
+        session.invalidate();
+        
+        return ResponseEntity.ok(Map.of("message", "Account deleted successfully"));
     }
 }

@@ -525,6 +525,24 @@
         </div>
     </div>
 
+    <!-- Delete Account Modal -->
+    <div class="modal-overlay" id="deleteAccountModal">
+        <div class="glass-modal" style="width: 90%; max-width: 400px;">
+            <h3 style="color: #d93025; font-size: 24px; margin-bottom: 12px; font-weight: 500;">Delete Account</h3>
+            <p style="color: var(--text-dark); font-weight: 500; font-size: 15px; margin-bottom: 24px;">
+                Deleting your account will permanently remove all your files, history, and associated data from our servers. This action cannot be undone.
+            </p>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-glass-active btn-cancel"
+                    style="flex: 1; background: rgba(255,255,255,0.4); color: var(--text-dark); border-color: rgba(255,255,255,0.5);"
+                    onclick="closeDeleteAccountModal()">Cancel</button>
+                <button class="btn-glass-active" id="confirmDeleteAccountBtn"
+                    style="flex: 1; background: rgba(231, 76, 60, 0.1); border-color: rgba(231, 76, 60, 0.3); color: #e74c3c;"
+                    onclick="confirmDeleteAccount()">Delete</button>
+            </div>
+        </div>
+    </div>
+
     <!-- OTP Modal -->
     <div class="modal-overlay" id="profileOtpModal">
         <div class="glass-modal" style="width: 90%; max-width: 400px;">
@@ -620,6 +638,9 @@
                 <a href="#" class="btn-glass-active btn-danger" onclick="performLogout(event)">
                     Log Out
                 </a>
+                <a href="#" class="btn-glass-active btn-danger" onclick="openDeleteAccountModal(event)">
+                    Delete Account
+                </a>
             </form>
 
             <!-- Guest View -->
@@ -630,6 +651,9 @@
                 </button>
                 <a href="#" class="btn-glass-active btn-danger" onclick="performLogout(event)">
                     Exit Guest Mode
+                </a>
+                <a href="#" class="btn-glass-active btn-danger" onclick="openDeleteAccountModal(event)">
+                    Delete Account
                 </a>
             </div>
 
@@ -826,8 +850,65 @@
             document.getElementById('customModal').classList.remove('active');
         }
 
+        function openDeleteAccountModal(e) {
+            if (e) e.preventDefault();
+            document.getElementById('deleteAccountModal').classList.add('active');
+        }
+
+        function closeDeleteAccountModal() {
+            document.getElementById('deleteAccountModal').classList.remove('active');
+        }
+
+        async function confirmDeleteAccount() {
+            const btn = document.getElementById('confirmDeleteAccountBtn');
+            btn.textContent = 'Deleting...';
+            btn.disabled = true;
+
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser === 'Guest' || !currentUser) {
+                try {
+                    const req = indexedDB.deleteDatabase("EduSyncDB");
+                    req.onsuccess = () => {
+                        localStorage.clear();
+                        window.location.replace('/auth');
+                    };
+                    req.onerror = () => {
+                        localStorage.clear();
+                        window.location.replace('/auth');
+                    };
+                } catch(e) {
+                    localStorage.clear();
+                    window.location.replace('/auth');
+                }
+            } else {
+                try {
+                    const response = await fetch('/api/auth/delete', { method: 'DELETE' });
+                    if (response.ok) {
+                        indexedDB.deleteDatabase("EduSyncDB");
+                        localStorage.clear();
+                        window.location.replace('/auth');
+                    } else {
+                        const data = await response.json();
+                        showModal('Error', data.error || 'Failed to delete account.', true);
+                        closeDeleteAccountModal();
+                        btn.textContent = 'Delete';
+                        btn.disabled = false;
+                    }
+                } catch (error) {
+                    showModal('Error', 'Network error occurred.', true);
+                    closeDeleteAccountModal();
+                    btn.textContent = 'Delete';
+                    btn.disabled = false;
+                }
+            }
+        }
+
         document.getElementById('customModal').addEventListener('click', function (e) {
             if (e.target === this) closeModal();
+        });
+
+        document.getElementById('deleteAccountModal').addEventListener('click', function (e) {
+            if (e.target === this) closeDeleteAccountModal();
         });
 
         function closeProfileOtpModal() {
