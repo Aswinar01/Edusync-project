@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart PDF Updater</title>
+    <title>EduSync Document AI</title>
     <!-- Fonts: Elegant serif for headings, clean sans for body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -79,14 +79,14 @@
 
         /* --- Global Typography --- */
         h1, h2 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 500;
             color: var(--text-dark);
             letter-spacing: -0.02em;
         }
 
         p, span, a, button {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         /* --- Liquid Glass Material --- */
@@ -198,9 +198,19 @@
         }
 
         .upload-text {
-            font-size: 18px;
+            font-size: 16px;
             color: var(--text-light);
             font-weight: 400;
+            max-width: 90%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 20px;
+            transition: color 0.3s, font-weight 0.3s;
+        }
+        .upload-box.has-file .upload-text {
+            color: var(--text-dark);
+            font-weight: 500;
         }
 
         /* Button styling */
@@ -280,23 +290,9 @@
             transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* The white light streak inside the progress bar */
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-            border-radius: inherit;
-            transform: translateX(-100%);
-            animation: shimmer-streak 2s infinite ease-in-out;
-        }
-
-        @keyframes shimmer-streak {
-            100% { transform: translateX(100%); }
-        }
 
         .status-text {
-            font-size: 20px;
+            font-size: 18px; font-weight: 500; letter-spacing: -0.2px; line-height: 1.4; font-weight: 500;
             color: var(--text-dark);
             font-weight: 400;
             transition: opacity 0.3s ease;
@@ -390,7 +386,7 @@
             margin-top: 32px;
             color: var(--text-light);
             text-decoration: none;
-            font-size: 16px;
+            font-size: 15px; line-height: 1.5; font-weight: 400; letter-spacing: 0.1px;
             border-bottom: 1px solid rgba(110, 122, 133, 0.3);
             padding-bottom: 2px;
             transition: color 0.2s;
@@ -479,6 +475,102 @@
             fill: none;
         }
 
+        
+        /* --- Modal System --- */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            border-radius: 0; /* matches sidebar */
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .custom-modal {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(30px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), inset 0 2px 5px rgba(255, 255, 255, 1);
+            border-radius: 24px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .modal-overlay.active .custom-modal {
+            transform: translateY(0) scale(1);
+        }
+        
+        .modal-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 22px;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        
+        .modal-body {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .btn-modal {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: 0.15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .btn-cancel {background: rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-dark);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-weight: 500;
+        }
+        .btn-cancel:hover {
+            background: rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+        
+        .btn-danger {
+            background: rgba(211, 47, 47, 0.85);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), 0 4px 10px rgba(211, 47, 47, 0.2);
+        }
+        .btn-danger:hover {
+            background: rgba(211, 47, 47, 1);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(211, 47, 47, 0.3);
+        }
+
         /* --- Sidebar --- */
         .sidebar {
             position: fixed;
@@ -510,7 +602,7 @@
         }
 
         .sidebar-header h2 {
-            font-size: 24px;
+            font-size: 24px; letter-spacing: -0.3px; font-weight: 500;
             margin: 0;
         }
 
@@ -537,43 +629,249 @@
             gap: 16px;
         }
 
-        /* Hide scrollbar */
-        .history-list::-webkit-scrollbar { display: none; }
-        .history-list { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Custom scrollbar */
+        .history-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .history-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .history-list::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        .history-list::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .history-controls {
+            position: relative;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.4);
+            margin-bottom: 20px;
+            overflow: visible;
+            z-index: 10000;
+        }
+
+        .control-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.8);
+            color: var(--text-dark);
+            font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: 0.15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 2px 5px rgba(0,0,0,0.02);
+            white-space: nowrap;
+        }
+        .control-btn:hover { background: rgba(255,255,255,0.6); }
+        .control-btn svg { width: 16px; height: 16px; }
+        
+        .filter-count {
+            background: #6a5acd;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .filter-count.zero { background: #aeb6bf; }
+
+        .delete-all-btn { color: #d32f2f; }
+        .delete-all-btn svg { stroke: #d32f2f; }
+        .delete-all-btn:hover { background: rgba(211,47,47,0.1); }
+
+        .doc-count {
+            font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0.2px;
+            color: var(--text-light);
+            margin-top: 16px;
+        }
+
+        .popover {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            width: 320px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1), inset 0 2px 5px rgba(255,255,255,1);
+            padding: 20px;
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .popover.active { display: flex; animation: popover-in 0.2s ease-out forwards; opacity: 1 !important; z-index: 9999 !important; }
+        @keyframes popover-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .popover-section { display: flex; flex-direction: column; gap: 10px; }
+        .popover-title { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.5; font-weight: 400; letter-spacing: 0.1px; color: var(--text-dark); }
+        
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .pill-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(200,210,220,0.5);
+            color: var(--text-dark);
+            font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0.2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .pill-btn:hover { background: rgba(255,255,255,0.9); }
+        .pill-btn.active {
+            background: rgba(230,240,255,0.8);
+            border-color: #6a5acd;
+            color: #483d8b;
+            font-weight: 500;
+        }
+        .pill-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: none; }
+        .pill-btn.active svg { display: inline-block; }
+
+        .popover-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .clear-filters { color: var(--text-light); text-decoration: none; font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: 0.15px; }
+        .clear-filters:hover { color: var(--text-dark); }
+        
+        .btn-pill-small {
+            background: rgba(230,240,255,0.8);
+            color: #483d8b;
+            border: 1px solid rgba(255,255,255,0.9);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: 0.15px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
 
         .history-item {
             padding: 16px;
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.6);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.9);
             box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6), 0 4px 10px rgba(0,0,0,0.02);
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 16px;
-            text-decoration: none;
             color: var(--text-dark);
             transition: transform 0.2s, background 0.2s;
+            position: relative;
         }
 
         .history-item:hover {
             transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.8);
         }
         
         .history-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.5);
+            width: 44px;
+            height: 44px;
+            background: #f0f4ff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            color: #6a5acd;
         }
         .history-icon svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.5; fill:none; }
-        .history-details { display: flex; flex-direction: column; }
-        .history-name { font-weight: 500; font-size: 15px; margin-bottom: 4px;}
-        .history-date { font-size: 13px; color: var(--text-light); }
+        
+        .history-details { display: flex; flex-direction: column; width: 100%; overflow: hidden; }
+        
+        .history-name { 
+            font-weight: 500; 
+            font-size: 15px; 
+            margin-bottom: 6px; 
+            word-break: break-all;
+            padding-right: 10px;
+            cursor: pointer;
+        }
+        .history-name-input {
+            width: 100%;
+            font-size: 15px;
+            font-weight: 500;
+            font-family: inherit;
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin-bottom: 6px;
+            background: rgba(255,255,255,0.8);
+            color: var(--text-dark);
+            outline: none;
+        }
+        .history-name-input:focus { border-color: #6a5acd; }
+        
+        .history-meta { 
+            font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0.2px; 
+            color: var(--text-light); 
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .history-badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .badge-original { background: #f0f4ff; color: #6a5acd; }
+        .badge-updated { background: #e8f5e9; color: #2e7d32; }
+
+        .history-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+        .action-btn:hover {
+            background: #fff;
+            color: var(--text-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .action-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
         @media (max-width: 768px) {
             .top-nav {
@@ -600,7 +898,7 @@
                 font-size: 40px;
             }
             .landing-header p {
-                font-size: 16px;
+                font-size: 15px; line-height: 1.5; font-weight: 400; letter-spacing: 0.1px;
                 padding: 0 20px;
             }
             .progress-pill-container {
@@ -608,11 +906,11 @@
             }
             .btn-pill {
                 padding: 12px 30px;
-                font-size: 16px;
+                font-size: 15px; line-height: 1.5; font-weight: 400; letter-spacing: 0.1px;
             }
             .back-btn {
                 padding: 8px 16px;
-                font-size: 14px;
+                font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: 0.15px;
             }
             .icon-btn {
                 width: 44px;
@@ -657,7 +955,7 @@
         }
 
         .review-header p {
-            font-size: 16px;
+            font-size: 15px; line-height: 1.5; font-weight: 400; letter-spacing: 0.1px;
             color: var(--text-light);
             margin-bottom: 24px;
         }
@@ -671,7 +969,7 @@
         .stat-pill {
             padding: 8px 16px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: 0.15px;
             background: rgba(255,255,255,0.4);
             border: 1px solid rgba(255,255,255,0.7);
             color: var(--text-dark);
@@ -785,14 +1083,14 @@
         .page-badge {
             background: rgba(100, 150, 255, 0.15);
             color: #3949ab;
-            font-size: 12px;
+            font-size: 12px; line-height: 1.4; font-weight: 400; letter-spacing: 0.3px;
             font-weight: 600;
             padding: 4px 10px;
             border-radius: 12px;
         }
 
         .source-text {
-            font-size: 13px;
+            font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0.2px;
             color: var(--text-light);
         }
 
@@ -806,7 +1104,7 @@
         
         .review-footer .btn-gradient {
             padding: 14px 40px;
-            font-size: 16px;
+            font-size: 15px; line-height: 1.5; font-weight: 400; letter-spacing: 0.1px;
             font-weight: 500;
         }
         .review-footer .sub-link {
@@ -818,8 +1116,8 @@
                 height: 90vh;
                 padding: 20px 15px;
             }
-            .review-header h2 { font-size: 24px; }
-            .review-header p { font-size: 14px; }
+            .review-header h2 { font-size: 24px; letter-spacing: -0.3px; font-weight: 500; }
+            .review-header p { font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: 0.15px; }
             .stats-pills { flex-wrap: wrap; }
             
             .review-content {
@@ -834,7 +1132,52 @@
                 display: none;
             }
         }
-    </style>
+            .popover-menu {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px) saturate(140%);
+            -webkit-backdrop-filter: blur(30px) saturate(140%);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: inset 0px 2px 4px var(--glass-highlight), inset 0px -2px 10px rgba(255,255,255,0.2), 0px 20px 40px var(--glass-shadow);
+        }
+        .popover-section {
+            margin-bottom: 15px;
+        }
+        .popover-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: 0.15px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0.2px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 2px 5px rgba(0,0,0,0.02);
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+        .chip:hover {
+            background: rgba(255, 255, 255, 0.7);
+            transform: translateY(-1px);
+        }
+        .chip.active {
+            background: rgba(255, 255, 255, 0.85);
+            color: #483d8b;
+            border-color: #6a5acd;
+            font-weight: 500;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,1), 0 4px 10px rgba(0,0,0,0.05);
+        }
+</style>
 </head>
 <body>
 
@@ -845,13 +1188,6 @@
     <!-- Top Navigation -->
     <div class="top-nav">
         <div style="display: flex; gap: 15px; pointer-events: auto;">
-             <a href="/" class="back-btn" title="Return to Homepage">
-                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                     <line x1="19" y1="12" x2="5" y2="12"></line>
-                     <polyline points="12 19 5 12 12 5"></polyline>
-                 </svg>
-                 Go Back
-             </a>
         </div>
         <div style="display: flex; gap: 15px;">
             <a href="/profile" class="icon-btn" title="Profile">
@@ -872,7 +1208,7 @@
     <!-- History Sidebar -->
     <div class="sidebar" id="historySidebar">
         <div class="sidebar-header">
-            <h2>Recent Documents</h2>
+            <h2>Recent documents</h2>
             <button class="close-btn" onclick="toggleHistory()">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -880,8 +1216,99 @@
                 </svg>
             </button>
         </div>
+
+        <div class="history-controls">
+            <div style="display: flex; gap: 8px; justify-content: space-between; width: 100%; margin-bottom:10px;">
+                <div style="position: relative; flex:1; display:flex;">
+                    <button class="control-btn" id="sortBtnBtn" onclick="toggleSortUI(event)" style="flex: 1; justify-content: center; padding: 8px 10px; font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0.2px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg> Sort
+                    </button>
+                    <!-- Sort Popover -->
+                    <div id="sortPopover" class="popover-menu" style="display: none; position: absolute; top: 45px; left: 0; width: 220px; z-index: 100;">
+                        <div class="popover-section">
+                            <div class="popover-title">Date modified</div>
+                            <div class="chip-group">
+                                <div class="chip sort-chip active" data-sort="date-desc">Newest first</div>
+                                <div class="chip sort-chip" data-sort="date-asc">Oldest first</div>
+                            </div>
+                        </div>
+                        <div class="popover-section">
+                            <div class="popover-title">Name</div>
+                            <div class="chip-group">
+                                <div class="chip sort-chip" data-sort="name-asc">A to Z</div>
+                                <div class="chip sort-chip" data-sort="name-desc">Z to A</div>
+                            </div>
+                        </div>
+                        <div class="popover-section">
+                            <div class="popover-title">File size</div>
+                            <div class="chip-group">
+                                <div class="chip sort-chip" data-sort="size-desc">Largest first</div>
+                                <div class="chip sort-chip" data-sort="size-asc">Smallest first</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="position: relative; flex:1; display:flex;">
+                    <button class="control-btn" id="filterBtnBtn" onclick="toggleFilterUI(event)" style="flex: 1; justify-content: center; padding: 8px 10px; font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0.2px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Filter <span class="filter-count zero" id="filterCount">0</span>
+                    </button>
+                    <!-- Filter Popover -->
+                    <div id="filterPopover" class="popover-menu" style="display: none; position: absolute; top: 45px; left: -100px; width: 280px; z-index: 100;">
+                        <div class="popover-section">
+                            <div class="popover-title">Type</div>
+                            <div class="chip-group">
+                                <div class="chip filter-chip filter-type active" data-val="all">All documents</div>
+                                <div class="chip filter-chip filter-type" data-val="Original">Original uploads</div>
+                                <div class="chip filter-chip filter-type" data-val="Updated">Updated by EduSync</div>
+                            </div>
+                        </div>
+                        <div class="popover-section">
+                            <div class="popover-title">Modified</div>
+                            <div class="chip-group">
+                                <div class="chip filter-chip filter-time active" data-val="all">Any time</div>
+                                <div class="chip filter-chip filter-time" data-val="today">Today</div>
+                                <div class="chip filter-chip filter-time" data-val="7days">Last 7 days</div>
+                                <div class="chip filter-chip filter-time" data-val="30days">Last 30 days</div>
+                            </div>
+                        </div>
+                        <div class="popover-section">
+                            <div class="popover-title">File size</div>
+                            <div class="chip-group">
+                                <div class="chip filter-chip filter-size active" data-val="all">Any size</div>
+                                <div class="chip filter-chip filter-size" data-val="<1">Under 1 MB</div>
+                                <div class="chip filter-chip filter-size" data-val="1-5">1 to 5 MB</div>
+                                <div class="chip filter-chip filter-size" data-val=">5">Over 5 MB</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                            <a href="#" style="color: var(--text-light); font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0.2px; text-decoration: none;" onclick="clearFilters(event)">Clear filters</a>
+                            <button class="btn-glass-active" style="padding: 6px 16px; font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0.2px; border-radius:12px; cursor:pointer;" onclick="toggleFilterUI()">Done</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="control-btn delete-all-btn" onclick="deleteAllHistory()" style="flex: 1; justify-content: center; padding: 8px 10px; font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0.2px;">
+                    <svg viewBox="0 0 24 24" style="width: 14px; height: 14px;"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6V20A2 2 0 0 1 17 22H7A2 2 0 0 1 5 20V6M8 6V4A2 2 0 0 1 10 2H14A2 2 0 0 1 16 4V6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Delete all
+                </button>
+            </div>
+            <div class="doc-count" id="docCount">0 documents</div>
+        </div>
         <div class="history-list" id="historyList">
             <!-- History items will be injected here via JS -->
+        </div>
+
+        <!-- Custom Modal inside sidebar -->
+        <div class="modal-overlay" id="confirmModal" onclick="handleModalOverlayClick(event)">
+            <div class="custom-modal">
+                <h3 class="modal-title" id="modalTitle">Confirm Action</h3>
+                <div class="modal-body" id="modalMessage">Are you sure you want to proceed?</div>
+                <div class="modal-actions">
+                    <button class="btn-modal btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button class="btn-modal btn-danger" id="modalConfirmBtn">Confirm</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -980,6 +1407,520 @@
     </div>
 
     <script th:inline="javascript">
+
+        // --- IndexedDB for History ---
+        const dbName = "EduSyncDB";
+        const dbVersion = 1;
+        let db;
+
+        const escapeHTML = str => str ? str.replace(/[&<>'"]/g, 
+            tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)) : '';
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(dbName, dbVersion);
+                request.onupgradeneeded = (e) => {
+                    db = e.target.result;
+                    if (!db.objectStoreNames.contains('documents')) {
+                        const store = db.createObjectStore('documents', { keyPath: 'id' });
+                        store.createIndex('date', 'date', { unique: false });
+                        store.createIndex('name', 'name', { unique: false });
+                        store.createIndex('type', 'type', { unique: false });
+                    }
+                };
+                request.onsuccess = (e) => { db = e.target.result; resolve(db); };
+                request.onerror = (e) => reject(e.target.error);
+            });
+        }
+
+        async function saveDocument(doc) {
+            if (localStorage.getItem('currentUser') === 'Guest' || !localStorage.getItem('currentUser')) {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction('documents', 'readwrite');
+                    const store = tx.objectStore('documents');
+                    const request = store.add(doc);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            } else {
+                const formData = new FormData();
+                formData.append('file', doc.blob);
+                formData.append('name', doc.name);
+                if (doc.type) formData.append('type', doc.type);
+                try {
+                    const response = await fetch('/api/documents', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const data = await response.json();
+                    return data.id;
+                } catch (error) {
+                    console.error('Error saving document to backend:', error);
+                    throw error;
+                }
+            }
+        }
+
+        async function getAllDocuments() {
+            if (localStorage.getItem('currentUser') === 'Guest' || !localStorage.getItem('currentUser')) {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction('documents', 'readonly');
+                    const store = tx.objectStore('documents');
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            } else {
+                try {
+                    const response = await fetch('/api/documents');
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const data = await response.json();
+                    return data.map(doc => ({
+                        id: doc.id,
+                        name: doc.name,
+                        type: doc.type,
+                        size: doc.size,
+                        date: new Date(doc.date).getTime()
+                    }));
+                } catch (error) {
+                    console.error('Error fetching documents from backend:', error);
+                    return [];
+                }
+            }
+        }
+
+        async function deleteDocument(id) {
+            if (localStorage.getItem('currentUser') === 'Guest' || !localStorage.getItem('currentUser')) {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction('documents', 'readwrite');
+                    const store = tx.objectStore('documents');
+                    const request = store.delete(id);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            } else {
+                try {
+                    const response = await fetch(`/api/documents/${id}`, { method: 'DELETE' });
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return true;
+                } catch (error) {
+                    console.error('Error deleting document:', error);
+                    throw error;
+                }
+            }
+        }
+
+        async function clearAllDocuments() {
+            if (localStorage.getItem('currentUser') === 'Guest' || !localStorage.getItem('currentUser')) {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction('documents', 'readwrite');
+                    const store = tx.objectStore('documents');
+                    const request = store.clear();
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            } else {
+                try {
+                    const response = await fetch('/api/documents/all', { method: 'DELETE' });
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return true;
+                } catch (error) {
+                    console.error('Error deleting all documents:', error);
+                    throw error;
+                }
+            }
+        }
+
+        async function updateDocument(doc) {
+            if (localStorage.getItem('currentUser') === 'Guest' || !localStorage.getItem('currentUser')) {
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction('documents', 'readwrite');
+                    const store = tx.objectStore('documents');
+                    const request = store.put(doc);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            } else {
+                try {
+                    const response = await fetch(`/api/documents/${doc.id}/rename`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: doc.name })
+                    });
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return true;
+                } catch (error) {
+                    console.error('Error renaming document:', error);
+                    throw error;
+                }
+            }
+        }
+
+        let documentsList = [];
+        let currentSort = 'date-desc';
+        let currentFilters = { type: 'all', time: 'all', size: 'all' };
+
+        async function loadHistory() {
+            documentsList = await getAllDocuments();
+            renderHistory();
+        }
+
+        function renderHistory() {
+            let filtered = documentsList.filter(doc => {
+                if (currentFilters.type !== 'all' && doc.type !== currentFilters.type) return false;
+                
+                const now = Date.now();
+                const docTime = new Date(doc.date).getTime();
+                const diff = now - docTime;
+                const day = 24 * 60 * 60 * 1000;
+                if (currentFilters.time === 'today' && diff > day) return false;
+                if (currentFilters.time === '7days' && diff > 7 * day) return false;
+                if (currentFilters.time === '30days' && diff > 30 * day) return false;
+                
+                const mb = 1024 * 1024;
+                if (currentFilters.size === '<1' && doc.size >= mb) return false;
+                if (currentFilters.size === '1-5' && (doc.size < mb || doc.size > 5 * mb)) return false;
+                if (currentFilters.size === '>5' && doc.size <= 5 * mb) return false;
+                
+                return true;
+            });
+
+            filtered.sort((a, b) => {
+                const timeA = new Date(a.date).getTime();
+                const timeB = new Date(b.date).getTime();
+                if (currentSort === 'date-desc') return timeB - timeA;
+                if (currentSort === 'date-asc') return timeA - timeB;
+                if (currentSort === 'name-asc') return a.name.localeCompare(b.name);
+                if (currentSort === 'name-desc') return b.name.localeCompare(a.name);
+                if (currentSort === 'size-desc') return b.size - a.size;
+                if (currentSort === 'size-asc') return a.size - b.size;
+                return 0;
+            });
+
+            const list = document.getElementById('historyList');
+            document.getElementById('docCount').textContent = `${filtered.length} document${filtered.length !== 1 ? 's' : ''}`;
+            
+            let fCount = 0;
+            if(currentFilters.type !== 'all') fCount++;
+            if(currentFilters.time !== 'all') fCount++;
+            if(currentFilters.size !== 'all') fCount++;
+            const badge = document.getElementById('filterCount');
+            badge.textContent = fCount;
+            if (fCount === 0) badge.classList.add('zero'); else badge.classList.remove('zero');
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<p style="text-align:center; color: var(--text-light); margin-top: 40px;">No documents found.</p>';
+                return;
+            }
+
+            list.innerHTML = filtered.map(doc => {
+                const d = new Date(doc.date);
+                const dateStr = d.toLocaleDateString() + ' at ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                let sizeStr = '';
+                if (doc.size < 1024 * 1024) sizeStr = Math.round(doc.size / 1024) + ' KB';
+                else sizeStr = (doc.size / (1024*1024)).toFixed(1) + ' MB';
+                
+                const badgeClass = doc.type === 'Updated' ? 'badge-updated' : 'badge-original';
+                
+                return `
+                <div class="history-item" data-id="${doc.id}">
+                    <div class="history-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    </div>
+                    <div class="history-details">
+                        <div class="history-name-container" id="name-container-${doc.id}">
+                            <div class="history-name" id="name-display-${doc.id}" onclick="event.stopPropagation(); renameDocument(${doc.id})">${escapeHTML(doc.name)}</div>
+                        </div>
+                        <div class="history-meta">
+                            <span>${dateStr}</span>
+                            <span>${sizeStr}</span>
+                            <span class="history-badge ${badgeClass}">${doc.type}</span>
+                        </div>
+                        <div class="history-actions">
+                            <button class="action-btn" onclick="event.stopPropagation(); downloadDocument(${doc.id})" title="Download"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+                            <button class="action-btn" onclick="event.stopPropagation(); renameDocument(${doc.id})" title="Rename"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                            <button class="action-btn" onclick="event.stopPropagation(); deleteDocumentFromUI(${doc.id})" title="Delete"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function renameDocument(id) {
+            const doc = documentsList.find(d => d.id === id);
+            if (!doc) return;
+            const container = document.getElementById(`name-container-${id}`);
+            container.innerHTML = `<input type="text" class="history-name-input" id="rename-input-${id}" value="${escapeHTML(doc.name)}" onkeydown="handleRenameKey(event, ${id})" onblur="commitRename(${id})">`;
+            const input = document.getElementById(`rename-input-${id}`);
+            input.focus();
+            const dot = input.value.lastIndexOf('.');
+            if (dot > 0) input.setSelectionRange(0, dot);
+            else input.select();
+        }
+
+        function handleRenameKey(e, id) {
+            if (e.key === 'Enter') commitRename(id);
+            if (e.key === 'Escape') renderHistory();
+        }
+
+        async function commitRename(id) {
+            const input = document.getElementById(`rename-input-${id}`);
+            if (!input) return;
+            const newName = input.value.trim();
+            if (newName) {
+                const doc = documentsList.find(d => d.id === id);
+                if (doc) {
+                    doc.name = newName;
+                    await updateDocument(doc);
+                }
+            }
+            renderHistory();
+        }
+
+
+        // --- Modal System ---
+        let currentModalCallback = null;
+        
+        function showConfirmModal(title, message, confirmText, callback) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            confirmBtn.textContent = confirmText;
+            
+            currentModalCallback = callback;
+            
+            confirmBtn.onclick = async () => {
+                const cb = currentModalCallback;
+                closeModal();
+                if (cb) {
+                    await cb();
+                }
+            };
+            
+            document.getElementById('confirmModal').classList.add('active');
+        }
+        
+        
+        function handleSort(btn, sortType) {
+            document.querySelectorAll('#sortPopover .pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentSort = sortType;
+            renderHistory();
+            document.getElementById('sortPopover').classList.remove('active');
+            document.removeEventListener('click', closePopoversOutside);
+        }
+
+        function handleFilter(btn, filterCategory, filterVal) {
+            const group = btn.closest('.pill-group');
+            group.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilters[filterCategory] = filterVal;
+        }
+
+        function handleModalOverlayClick(e) {
+            if (e.target.id === 'confirmModal') {
+                closeModal();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+            currentModalCallback = null;
+        }
+
+        async function deleteDocumentFromUI(id) {
+            showConfirmModal(
+                'Delete Document', 
+                'Are you sure you want to permanently delete this document?', 
+                'Delete',
+                async () => {
+                    await deleteDocument(id);
+                    documentsList = documentsList.filter(doc => doc.id !== id);
+                    renderHistory();
+                }
+            );
+        }
+
+        async function deleteAllHistory() {
+            if (documentsList.length === 0) return;
+            showConfirmModal(
+                'Delete All Documents', 
+                'Are you sure you want to permanently delete all documents? This action cannot be undone.', 
+                'Delete All',
+                async () => {
+                    await clearAllDocuments();
+                    documentsList = [];
+                    renderHistory();
+                }
+            );
+        }
+
+
+        async function downloadDocument(id) {
+            const doc = documentsList.find(d => d.id === id);
+            if (!doc) return;
+            if (localStorage.getItem('currentUser') && localStorage.getItem('currentUser') !== 'Guest') {
+                window.location.href = `/api/documents/${id}/download`;
+                return;
+            }
+            if (!doc.blob) return;
+            const url = window.URL.createObjectURL(doc.blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = doc.name;
+            document.body.appendChild(a);
+            a.addEventListener('click', e => e.stopPropagation());
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function togglePopover(e, id) {
+            console.log("togglePopover called for:", id);
+            if(e) e.stopPropagation();
+            const p = document.getElementById(id);
+            console.log("Popover element found:", p);
+            const isActive = p.classList.contains('active');
+            document.querySelectorAll('.popover').forEach(el => el.classList.remove('active'));
+            if (!isActive) {
+                p.classList.add('active');
+                document.addEventListener('click', closePopoversOutside);
+            }
+        }
+
+        function closePopoversOutside(e) {
+            if (!e.target.closest('.popover') && !e.target.closest('.control-btn')) {
+                document.querySelectorAll('.popover').forEach(el => el.classList.remove('active'));
+                document.removeEventListener('click', closePopoversOutside);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            async function syncGuestDataToDatabase() {
+                try {
+                    const tx = db.transaction('documents', 'readonly');
+                    const store = tx.objectStore('documents');
+                    const request = store.getAll();
+                    
+                    request.onsuccess = async () => {
+                        const docs = request.result;
+                        if (docs && docs.length > 0) {
+                            let total = docs.length;
+                            let successCount = 0;
+                            
+                            const modal = document.getElementById('syncModal');
+                            const toast = document.getElementById('syncToast');
+                            const countdown = document.getElementById('syncModalCountdown');
+                            const progress = document.getElementById('syncModalProgress');
+                            const toastText = document.getElementById('syncToastText');
+                            
+                            modal.classList.add('active');
+                            
+                            function updateUI() {
+                                countdown.textContent = `${successCount} / ${total}`;
+                                progress.style.width = `${(successCount / total) * 100}%`;
+                                toastText.textContent = `${successCount} of ${total} files transferred`;
+                            }
+                            
+                            updateUI();
+                            
+                            const hideModalHandler = (e) => {
+                                if (e.target === modal) {
+                                    modal.classList.remove('active');
+                                    toast.style.display = 'flex';
+                                }
+                            };
+                            modal.addEventListener('click', hideModalHandler);
+
+                            for (const doc of docs) {
+                                const formData = new FormData();
+                                formData.append('file', doc.blob, doc.name);
+                                formData.append('name', doc.name);
+                                
+                                if (doc.type) {
+                                    formData.append('type', doc.type);
+                                } else {
+                                    formData.append('type', doc.name.toLowerCase().includes('(updated)') ? 'Updated' : 'Original');
+                                }
+                                
+                                try {
+                                    const res = await fetch('/api/documents', {
+                                        method: 'POST',
+                                        body: formData
+                                    });
+                                    if (res.ok) {
+                                        successCount++;
+                                        updateUI();
+                                    } else {
+                                        const errText = await res.text();
+                                        console.error("Server rejected doc sync", doc.name, errText);
+                                    }
+                                } catch (err) {
+                                    console.error("Failed to sync doc", doc.name, err);
+                                }
+                            }
+                            
+                            modal.removeEventListener('click', hideModalHandler);
+                            modal.classList.remove('active');
+                            toast.style.display = 'none';
+
+                            // Only clear IndexedDB if we synced everything successfully
+                            if (successCount === total) {
+                                const txClear = db.transaction('documents', 'readwrite');
+                                const storeClear = txClear.objectStore('documents');
+                                storeClear.clear();
+                                showNoticeModal('Data Transferred', `Successfully transferred all ${successCount} files to your account.`);
+                            } else {
+                                showNoticeModal('Transfer Incomplete', `Some files could not be transferred. ${successCount} out of ${total} transferred.`);
+                            }
+                        }
+                        loadHistory();
+                    };
+                } catch(e) {
+                    console.error("Sync error", e);
+                    loadHistory();
+                }
+            }
+
+            initDB().then(() => {
+                if (localStorage.getItem('syncGuestData') === 'true') {
+                    localStorage.removeItem('syncGuestData');
+                    syncGuestDataToDatabase();
+                } else if (localStorage.getItem('clearGuestData') === 'true') {
+                    localStorage.removeItem('clearGuestData');
+                    const txClear = db.transaction('documents', 'readwrite');
+                    const storeClear = txClear.objectStore('documents');
+                    storeClear.clear();
+                    loadHistory();
+                } else {
+                    loadHistory();
+                }
+            }).catch(e => console.error("IndexedDB error", e));
+
+            
+
+        });
+
+        function applyFilters() {
+            renderHistory();
+            document.getElementById('filterPopover').classList.remove('active');
+            document.removeEventListener('click', closePopoversOutside);
+        }
+
+        function clearFilters(e) {
+            e.preventDefault();
+            currentFilters = { type: 'all', time: 'all', size: 'all' };
+            document.querySelectorAll('#filterPopover .pill-group').forEach(group => {
+                group.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+                group.querySelector('.pill-btn').classList.add('active');
+            });
+            renderHistory();
+        }
+
         // App Configuration
         const APP_CONFIG = {
             MAX_FILE_SIZE_MB: /*[[${maxFileSizeMb}]]*/ 50,
@@ -1154,32 +2095,53 @@
                 setTimeout(() => {
                     downloadLink.href = url;
                     
-                    // Generate new file name
+                    // Generate initial updated file name
                     let baseName = selectedFile.name;
                     if (baseName.toLowerCase().endsWith('.pdf')) {
                         baseName = baseName.substring(0, baseName.length - 4);
                     }
                     
-                    let newFileName = baseName + "(updated)";
-                    
-                    if (downloadCounts[selectedFile.name] !== undefined) {
-                        downloadCounts[selectedFile.name]++;
-                        newFileName += downloadCounts[selectedFile.name];
-                    } else {
+                    if (downloadCounts[selectedFile.name] === undefined) {
                         downloadCounts[selectedFile.name] = 0;
                     }
                     
-                    downloadLink.download = newFileName + ".pdf";
+                    const getNextFileName = () => {
+                        let name = baseName + "(updated)";
+                        if (downloadCounts[selectedFile.name] > 0) {
+                            name += downloadCounts[selectedFile.name];
+                        }
+                        return name + ".pdf";
+                    };
                     
-                    // Add to history
-                    const history = JSON.parse(localStorage.getItem('fileHistory') || '[]');
-                    const now = new Date();
-                    history.unshift({
+                    downloadLink.download = getNextFileName();
+                    
+                    // Add Original and Initial Updated to history immediately when processing finishes
+                    const ts = Date.now();
+                    saveDocument({
+                        id: ts - 1,
                         name: selectedFile.name,
-                        date: now.toLocaleDateString() + ' at ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-                    });
-                    localStorage.setItem('fileHistory', JSON.stringify(history));
-                    loadHistory();
+                        date: ts - 1,
+                        size: selectedFile.size,
+                        type: 'Original',
+                        blob: selectedFile
+                    }).then(() => {
+                        return saveDocument({
+                            id: ts,
+                            name: downloadLink.download,
+                            date: ts,
+                            size: blob.size,
+                            type: 'Updated',
+                            blob: blob
+                        });
+                    }).then(() => loadHistory());
+                    
+                    // Attach click listener to prepare next filename without creating duplicate history entries
+                    downloadLink.onclick = () => {
+                        setTimeout(() => {
+                            downloadCounts[selectedFile.name]++;
+                            downloadLink.download = getNextFileName();
+                        }, 100);
+                    };
                     
                     showScreen('success');
                 }, 600);
@@ -1221,15 +2183,7 @@
             colsHeader.style.display = 'flex';
             
             container.innerHTML = updates.map((update, index) => {
-                // simple escape function to prevent XSS
-                const escapeHTML = str => str ? str.replace(/[&<>'"]/g, 
-                    tag => ({
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        "'": '&#39;',
-                        '"': '&quot;'
-                    }[tag] || tag)) : '';
+
 
                 return `
                 <div class="review-item">
@@ -1275,37 +2229,225 @@
         
         function closeSidebarOutside(e) {
             const sidebar = document.getElementById('historySidebar');
-            if (!sidebar.contains(e.target) && !e.target.closest('.icon-btn')) {
+            // Do not close if clicking inside modal overlay (which is inside sidebar) or control buttons
+            if (!sidebar.contains(e.target) && !e.target.closest('.icon-btn') && !document.getElementById('confirmModal').contains(e.target)) {
                 sidebar.classList.remove('open');
                 document.removeEventListener('click', closeSidebarOutside);
             }
         }
 
-        // History Loader
-        function loadHistory() {
-            const historyList = document.getElementById('historyList');
-            const history = JSON.parse(localStorage.getItem('fileHistory') || '[]');
-            
-            if (history.length === 0) {
-                historyList.innerHTML = '<p style="text-align:center; color: var(--text-light); margin-top: 20px;">No documents yet.</p>';
+
+    
+        function toggleSortUI(e) { if(e) e.stopPropagation();
+            const p = document.getElementById('sortPopover');
+            const fp = document.getElementById('filterPopover');
+            if(fp) fp.style.display = 'none';
+            if (p.style.display === 'none' || p.style.display === '') {
+                p.style.display = 'block';
+            } else {
+                p.style.display = 'none';
+            }
+        }
+        function toggleFilterUI(e) { if(e) e.stopPropagation();
+            const p = document.getElementById('filterPopover');
+            const sp = document.getElementById('sortPopover');
+            if(sp) sp.style.display = 'none';
+            if (p.style.display === 'none' || p.style.display === '') {
+                p.style.display = 'block';
+            } else {
+                p.style.display = 'none';
+            }
+        }
+        function clearFilters(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.querySelectorAll('.filter-chip').forEach(el => el.classList.remove('active'));
+            document.querySelector('.filter-type[data-val="all"]').classList.add('active');
+            document.querySelector('.filter-time[data-val="all"]').classList.add('active');
+            document.querySelector('.filter-size[data-val="all"]').classList.add('active');
+            currentFilters = { type: 'all', time: 'all', size: 'all' };
+            updateFilterCount();
+            renderHistory();
+        }
+
+        function updateFilterCount() {
+            let count = 0;
+            if (currentFilters.type !== 'all') count++;
+            if (currentFilters.time !== 'all') count++;
+            if (currentFilters.size !== 'all') count++;
+            const badge = document.getElementById('filterCount');
+            badge.textContent = count;
+            badge.classList.toggle('zero', count === 0);
+        }
+        
+        // Chip click handlers via event delegation
+        document.addEventListener('click', function(e) {
+            // Sort chips
+            if(e.target.classList.contains('sort-chip')) {
+                e.stopPropagation();
+                document.querySelectorAll('.sort-chip').forEach(el => el.classList.remove('active'));
+                e.target.classList.add('active');
+                currentSort = e.target.getAttribute('data-sort');
+                renderHistory();
+                return;
+            }
+            // Filter chips - type
+            if(e.target.classList.contains('filter-type')) {
+                e.stopPropagation();
+                document.querySelectorAll('.filter-type').forEach(el => el.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilters.type = e.target.getAttribute('data-val');
+                updateFilterCount();
+                renderHistory();
+                return;
+            }
+            // Filter chips - time
+            if(e.target.classList.contains('filter-time')) {
+                e.stopPropagation();
+                document.querySelectorAll('.filter-time').forEach(el => el.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilters.time = e.target.getAttribute('data-val');
+                updateFilterCount();
+                renderHistory();
+                return;
+            }
+            // Filter chips - size
+            if(e.target.classList.contains('filter-size')) {
+                e.stopPropagation();
+                document.querySelectorAll('.filter-size').forEach(el => el.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilters.size = e.target.getAttribute('data-val');
+                updateFilterCount();
+                renderHistory();
                 return;
             }
             
-            historyList.innerHTML = history.map(item => `
-                <a href="#" class="history-item">
-                    <div class="history-icon">
-                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    </div>
-                    <div class="history-details">
-                        <span class="history-name" style="word-break: break-all;">${item.name}</span>
-                        <span class="history-date">${item.date}</span>
-                    </div>
-                </a>
-            `).join('');
+            // Click outside popovers to close them
+            if (!e.target.closest('#sortPopover') && !e.target.closest('#sortBtnBtn')) {
+                const sp = document.getElementById('sortPopover');
+                if (sp) sp.style.display = 'none';
+            }
+            if (!e.target.closest('#filterPopover') && !e.target.closest('#filterBtnBtn')) {
+                const fp = document.getElementById('filterPopover');
+                if (fp) fp.style.display = 'none';
+            }
+        });
+</script>
+
+
+
+    <!-- Transfer / generic modal overlay injected via python -->
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-        
-        // Initialize
-        document.addEventListener('DOMContentLoaded', loadHistory);
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .glass-modal {
+            width: 360px;
+            padding: 30px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            transform: scale(0.9);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .modal-overlay.active .glass-modal {
+            transform: scale(1);
+        }
+        .glass-modal h3 {
+            margin-bottom: 12px;
+            font-size: 24px; letter-spacing: -0.3px; font-weight: 500;
+        }
+        .glass-modal p {
+            color: var(--text-light);
+            margin-bottom: 24px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .glass-modal .btn-glass-active {
+            padding: 12px 30px;
+            font-size: 15px; line-height: 1.5; font-weight: 400; letter-spacing: 0.1px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            background: rgba(230, 240, 255, 0.6);
+            color: var(--text-dark);
+            box-shadow: inset 0 4px 6px rgba(255, 255, 255, 1), inset 0 -2px 8px rgba(0, 0, 0, 0.05), 0 10px 20px rgba(100, 150, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+        .glass-modal .btn-glass-active:hover {
+            background: rgba(240, 248, 255, 0.8);
+            transform: translateY(-2px);
+            box-shadow: inset 0 4px 8px rgba(255, 255, 255, 1), inset 0 -2px 10px rgba(0, 0, 0, 0.05), 0 15px 30px rgba(100, 150, 255, 0.2);
+        }
+    </style>
+    <div class="modal-overlay" id="customModal">
+        <div class="glass-modal">
+            <h3 id="noticeModalTitle" style="background: linear-gradient(90deg, #1a73e8, #4285f4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 28px; margin-bottom: 15px;">Notice</h3>
+            <p id="noticeModalMessage" style="color: var(--text-dark); font-weight: 500;">...</p>
+            <button class="btn-glass-active" onclick="closeNoticeModal()">Got it</button>
+        </div>
+    </div>
+    <div class="modal-overlay" id="syncModal">
+        <div class="glass-modal">
+            <h3 style="background: linear-gradient(90deg, #1a73e8, #4285f4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 28px; margin-bottom: 15px;">Syncing Data</h3>
+            <p style="color: var(--text-dark); font-weight: 500; margin-bottom: 5px;">Transferring your guest history to your account...</p>
+            <div style="font-size: 42px; font-weight: 300; color: #74a3f7; margin: 15px 0;" id="syncModalCountdown">0 / 0</div>
+            <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.05); border-radius: 4px; overflow: hidden; margin-bottom: 20px;">
+                <div id="syncModalProgress" style="height: 100%; width: 0%; background: linear-gradient(90deg, #74a3f7, #59d6db); transition: width 0.3s ease;"></div>
+            </div>
+            <p style="font-size: 13px; color: var(--text-light); margin-bottom: 0;">You can click outside to continue using the app while this finishes.</p>
+        </div>
+    </div>
+
+    <div id="syncToast" style="position: fixed; bottom: 20px; right: 20px; background: rgba(255,255,255,0.85); padding: 15px 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,1); display: none; z-index: 1000; backdrop-filter: blur(10px); flex-direction: column; gap: 8px;">
+        <h4 style="margin:0; font-size: 14px; font-weight: 600; color: #74a3f7;">Syncing Data...</h4>
+        <p id="syncToastText" style="margin:0; font-size: 13px; color: var(--text-dark); font-weight: 500;">0 of 0 files transferred</p>
+    </div>
+
+    <script>
+        function showNoticeModal(title, message, isError = false) {
+            const titleEl = document.getElementById('noticeModalTitle');
+            titleEl.textContent = title;
+            
+            if (isError) {
+                titleEl.style.color = '#d93025';
+                titleEl.style.background = 'none';
+                titleEl.style.webkitTextFillColor = 'initial';
+            } else {
+                titleEl.style.background = 'linear-gradient(90deg, #1a73e8, #4285f4)';
+                titleEl.style.webkitBackgroundClip = 'text';
+                titleEl.style.webkitTextFillColor = 'transparent';
+            }
+            
+            document.getElementById('noticeModalMessage').textContent = message;
+            document.getElementById('customModal').classList.add('active');
+        }
+        function closeNoticeModal() {
+            document.getElementById('customModal').classList.remove('active');
+        }
+        document.getElementById('customModal').addEventListener('click', function(e) {
+            if (e.target === this) closeNoticeModal();
+        });
     </script>
 </body>
 </html>

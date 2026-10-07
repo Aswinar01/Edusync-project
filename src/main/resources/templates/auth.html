@@ -7,7 +7,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -25,7 +25,7 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f7f9fb;
             color: var(--text-dark);
             min-height: 100vh;
@@ -68,14 +68,14 @@
 
         /* --- Global Typography --- */
         h1, h2 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 500;
             color: var(--text-dark);
             letter-spacing: -0.02em;
         }
 
         p, span, a, button, input {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         /* Top Nav */
@@ -147,7 +147,7 @@
         }
 
         .auth-card h2 {
-            font-size: 32px;
+            font-size: 32px; letter-spacing: -0.5px; font-weight: 500;
             margin-bottom: 32px;
         }
 
@@ -176,7 +176,7 @@
             border: 1px solid rgba(255, 255, 255, 0.6);
             background: rgba(255, 255, 255, 0.2);
             color: var(--text-dark);
-            font-size: 16px;
+            font-size: 15px; line-height: 1.5; font-weight: 400; letter-spacing: 0.1px;
             outline: none;
             transition: all 0.3s ease;
             box-shadow: 
@@ -234,7 +234,7 @@
 
         .auth-footer {
             margin-top: 24px;
-            font-size: 14px;
+            font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: 0.15px;
             color: var(--text-light);
         }
 
@@ -287,7 +287,7 @@
         }
         .glass-modal h3 {
             margin-bottom: 12px;
-            font-size: 24px;
+            font-size: 24px; letter-spacing: -0.3px; font-weight: 500;
         }
         .glass-modal p {
             color: var(--text-light);
@@ -297,7 +297,7 @@
         }
         .glass-modal .btn-glass-active {
             padding: 12px 30px;
-            font-size: 16px;
+            font-size: 15px; line-height: 1.5; font-weight: 400; letter-spacing: 0.1px;
             margin-top: 0;
         }
 
@@ -317,7 +317,7 @@
             }
             .back-btn {
                 padding: 8px 16px;
-                font-size: 14px;
+                font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: 0.15px;
             }
         }
     </style>
@@ -329,7 +329,7 @@
     <div class="bg-waves"></div>
 
     <div class="top-nav">
-        <a href="javascript:history.back()" class="back-btn">
+        <a href="/" class="back-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
@@ -340,17 +340,17 @@
 
     <!-- Custom Modal -->
     <div class="modal-overlay" id="customModal">
-        <div class="glass-modal">
-            <h3 id="modalTitle">Notice</h3>
-            <p id="modalMessage">Message goes here</p>
-            <button class="btn-glass-active" onclick="closeModal()">OK</button>
+        <div class="glass-modal" style="width: 90%; max-width: 400px;">
+            <h3 id="modalTitle" style="font-size: 24px; margin-bottom: 12px; font-weight: 500;">Notice</h3>
+            <p id="modalMessage" style="color: var(--text-dark); font-weight: 500; font-size: 15px; margin-bottom: 24px;">Message goes here</p>
+            <button class="btn-glass-active" style="width: 100%;" onclick="closeModal()">OK</button>
         </div>
     </div>
 
     <!-- Guest Modal -->
     <div class="modal-overlay" id="guestModal">
         <div class="glass-modal" style="width: 90%; max-width: 480px;">
-            <h3 style="margin-bottom: 16px;">Guest Mode Notice</h3>
+            <h3 style="background: linear-gradient(90deg, #1a73e8, #4285f4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 24px; margin-bottom: 16px;">Guest Mode Notice</h3>
             <p style="text-align: left; margin-bottom: 12px; font-size: 14.5px;">
                 By proceeding without an account, your recently processed files will be <strong>temporarily stored</strong> in your browser's data. This information may be lost if you clear your browser cache or switch devices.
             </p>
@@ -361,6 +361,17 @@
                 <button class="btn-glass-active" style="flex: 1; background: rgba(255,255,255,0.4); color: var(--text-dark); border-color: rgba(255,255,255,0.5);" onclick="closeGuestModal()">Cancel</button>
                 <button class="btn-glass-active" style="flex: 1;" onclick="continueAsGuest()">Continue</button>
             </div>
+        </div>
+    </div>
+
+    <!-- OTP Modal -->
+    <div class="modal-overlay" id="otpModal">
+        <div class="glass-modal" style="width: 90%; max-width: 400px;">
+            <h3 style="background: linear-gradient(90deg, #1a73e8, #4285f4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 24px; margin-bottom: 12px;">Verify Email</h3>
+            <p style="color: var(--text-dark); font-weight: 500; font-size: 15px; margin-bottom: 24px;">Please enter the 6-digit OTP sent to your email.</p>
+            <input type="text" id="otpInput" class="glass-input" style="margin-bottom: 15px; text-align: center; letter-spacing: 10px; font-size: 22px; padding: 15px;" placeholder="------" maxlength="6" onkeyup="if(event.key === 'Enter') verifyAuthOtp()">
+            <p id="otpErrorMsg" style="color: #e74c3c; font-size: 13.5px; font-weight: 500; margin-top: -5px; margin-bottom: 15px; display: none; text-align: left; padding-left: 5px;">Incorrect code. Please try again.</p>
+            <button class="btn-glass-active" style="width: 100%;" id="verifyOtpSubmitBtn" onclick="verifyAuthOtp()">Confirm OTP</button>
         </div>
     </div>
 
@@ -375,18 +386,19 @@
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
-                    <input type="text" class="glass-input" id="nameInput" placeholder="Full Name">
+                    <input type="text" class="glass-input" id="nameInput" placeholder="Full Name" disabled>
                 </div>
                 
-                <div class="input-group">
+                <div class="input-group" style="position: relative;">
                     <svg class="input-icon" viewBox="0 0 24 24">
                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                         <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
                     <input type="email" id="emailInput" class="glass-input" placeholder="Email">
+                    <button type="button" id="verifyEmailBtn" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: linear-gradient(90deg, #1e3a8a, #0284c7); border: none; padding: 6px 14px; border-radius: 20px; color: white; font-weight: 500; font-size: 12px; cursor: pointer;" onclick="sendAuthOtp()">Verify</button>
                 </div>
                 
-                <div class="input-group">
+                <div class="input-group" id="passwordGroup">
                     <svg class="input-icon" viewBox="0 0 24 24">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -394,10 +406,20 @@
                     <input type="password" id="passwordInput" class="glass-input" placeholder="Password">
                 </div>
                 
+                <div class="input-group" id="confirmPasswordGroup" style="display: none;">
+                    <svg class="input-icon" viewBox="0 0 24 24">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <polyline points="9 12 11 14 15 10"></polyline>
+                    </svg>
+                    <input type="password" id="confirmPasswordInput" class="glass-input" placeholder="Confirm Password" disabled>
+                </div>
+                
                 <button type="submit" class="btn-glass-active" id="authSubmitBtn">
                     Sign In
                 </button>
             </form>
+
+
             
             <div class="auth-footer">
                 <span id="footerText">Don't have an account?</span> 
@@ -405,13 +427,14 @@
             </div>
             
             <div class="auth-footer" style="margin-top: 15px;">
-                <a href="#" onclick="showGuestModal(event)" style="font-size: 13px; color: var(--text-light); border-bottom: 1px solid transparent; opacity: 0.8;">Use without an account</a>
+                <a href="#" onclick="showGuestModal(event)" style="font-size: 13px; line-height: 1.4; font-weight: 400; letter-spacing: 0.2px; color: var(--text-light); border-bottom: 1px solid transparent; opacity: 0.8;">Use without an account</a>
             </div>
         </div>
     </div>
 
     <script>
         let isLogin = true;
+        let isEmailVerified = false;
 
         function toggleAuthMode(e) {
             e.preventDefault();
@@ -419,29 +442,71 @@
             
             const title = document.getElementById('authTitle');
             const nameGroup = document.getElementById('nameGroup');
+            const passwordGroup = document.getElementById('passwordGroup');
+            const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
             const submitBtn = document.getElementById('authSubmitBtn');
             const footerText = document.getElementById('footerText');
             const toggleBtn = document.getElementById('toggleAuthBtn');
+            const verifyBtn = document.getElementById('verifyEmailBtn');
 
             if (isLogin) {
                 // Switch to Sign In
                 title.textContent = "Sign in to your account";
                 nameGroup.style.display = "none";
+                document.getElementById('nameInput').disabled = true;
+                passwordGroup.style.display = "flex";
+                if(confirmPasswordGroup) {
+                    confirmPasswordGroup.style.display = "none";
+                    document.getElementById('confirmPasswordInput').disabled = true;
+                }
+                submitBtn.style.display = "block";
                 submitBtn.textContent = "Sign In";
                 footerText.textContent = "Don't have an account?";
                 toggleBtn.textContent = "Sign up";
+                verifyBtn.style.display = "none";
             } else {
                 // Switch to Sign Up
                 title.textContent = "Create your account";
-                nameGroup.style.display = "block";
+                nameGroup.style.display = "flex";
+                document.getElementById('nameInput').disabled = false;
+                
+                if (!isEmailVerified) {
+                    passwordGroup.style.display = "none";
+                    if(confirmPasswordGroup) confirmPasswordGroup.style.display = "none";
+                    submitBtn.style.display = "none";
+                    verifyBtn.style.display = "block";
+                } else {
+                    passwordGroup.style.display = "flex";
+                    if(confirmPasswordGroup) {
+                        confirmPasswordGroup.style.display = "flex";
+                        document.getElementById('confirmPasswordInput').disabled = false;
+                    }
+                    submitBtn.style.display = "block";
+                    verifyBtn.style.display = "none";
+                }
+                
                 submitBtn.textContent = "Sign Up";
                 footerText.textContent = "Already have an account?";
                 toggleBtn.textContent = "Sign in";
             }
         }
 
-        function showModal(title, message) {
-            document.getElementById('modalTitle').textContent = title;
+        function showModal(title, message, isError = true) {
+            const titleEl = document.getElementById('modalTitle');
+            titleEl.textContent = title;
+            
+            if (isError) {
+                // Google Red for errors
+                titleEl.style.color = '#d93025';
+                titleEl.style.background = 'none';
+                titleEl.style.webkitTextFillColor = 'initial';
+            } else {
+                // Google Blue gradient for info
+                titleEl.style.background = 'linear-gradient(90deg, #1a73e8, #4285f4)';
+                titleEl.style.webkitBackgroundClip = 'text';
+                titleEl.style.webkitTextFillColor = 'transparent';
+            }
+            
             document.getElementById('modalMessage').textContent = message;
             document.getElementById('customModal').classList.add('active');
         }
@@ -467,51 +532,217 @@
             if (e.target === this) closeGuestModal();
         });
         
+        document.getElementById('otpModal').addEventListener('click', function(e) {
+            if (e.target === this) document.getElementById('otpModal').classList.remove('active');
+        });
+        
+        let currentOtpHash = null;
+        
+        async function sendAuthOtp() {
+            const email = document.getElementById('emailInput').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showModal('Invalid Email', 'Please enter a valid email to verify.', true);
+                return;
+            }
+            const btn = document.getElementById('verifyEmailBtn');
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
+            
+            // Clear any previous error
+            document.getElementById('otpErrorMsg').style.display = 'none';
+            document.getElementById('otpInput').value = '';
+            
+            try {
+                const res = await fetch('/api/auth/send-otp', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, type: 'register'})
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    currentOtpHash = data.otpHash;
+                    document.getElementById('otpModal').classList.add('active');
+                    document.getElementById('otpInput').focus();
+                    btn.textContent = 'Resend';
+                    btn.disabled = false;
+                } else {
+                    const err = await res.json();
+                    showModal('Account already exists', 'This email is already registered. Please sign in instead.', true);
+                    btn.textContent = 'Verify';
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                showModal('Connection error', 'We couldn\'t connect to the server. Please try again.', true);
+                btn.textContent = 'Verify';
+                btn.disabled = false;
+            }
+        }
+        
+        async function verifyAuthOtp() {
+            const email = document.getElementById('emailInput').value.trim();
+            const otp = document.getElementById('otpInput').value.trim();
+            const errorMsg = document.getElementById('otpErrorMsg');
+            
+            if (otp.length !== 6) {
+                errorMsg.textContent = 'Please enter a complete 6-digit code.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            errorMsg.style.display = 'none';
+            const btn = document.getElementById('verifyOtpSubmitBtn');
+            btn.textContent = 'Verifying...';
+            btn.disabled = true;
+            
+            try {
+                const res = await fetch('/api/auth/verify-otp', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email, otp, otpHash: currentOtpHash})
+                });
+                if (res.ok) {
+                    isEmailVerified = true;
+                    document.getElementById('otpModal').classList.remove('active');
+                    document.getElementById('verifyEmailBtn').style.display = 'none';
+                    document.getElementById('emailInput').readOnly = true;
+                    document.getElementById('passwordGroup').style.display = 'flex';
+                    document.getElementById('confirmPasswordGroup').style.display = 'flex';
+                    document.getElementById('confirmPasswordInput').disabled = false;
+                    document.getElementById('authSubmitBtn').style.display = 'block';
+                    
+                    showModal('Email Verified', 'Your email address has been successfully verified. You can now complete your registration.', false);
+                } else {
+                    const err = await res.json();
+                    errorMsg.textContent = err.error || 'Incorrect verification code. Please try again.';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (e) {
+                errorMsg.textContent = 'Network error. Please check your connection.';
+                errorMsg.style.display = 'block';
+            }
+            btn.textContent = 'Confirm OTP';
+            btn.disabled = false;
+        }
+        
         function continueAsGuest() {
             localStorage.setItem('currentUser', 'Guest');
             window.location.href = '/app';
         }
 
-        document.getElementById('authForm').addEventListener('submit', function(e) {
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // transferData remains in localStorage until form submission
+        });
+
+        document.getElementById('authForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            // If they press Enter on the first step of Sign Up, trigger the Verify flow instead of full submit
+            if (!isLogin && !isEmailVerified) {
+                sendAuthOtp();
+                return;
+            }
             
             const name = document.getElementById('nameInput').value.trim();
             const email = document.getElementById('emailInput').value.trim();
             const password = document.getElementById('passwordInput').value.trim();
             
             if (!isLogin && !name) {
-                showModal('Error', 'Full Name cannot be empty.');
+                showModal('Enter your name', 'Enter your first and last name to continue.', true);
                 return;
             }
             
             if (!email) {
-                showModal('Error', 'Email address is required.');
+                showModal('Sign in', 'Enter an email address.', true);
                 return;
             }
             
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                showModal('Invalid Email', 'Please enter a valid email address.');
+                showModal('Sign in', 'Enter a valid email address.', true);
                 return;
             }
             
             if (!password) {
-                showModal('Error', 'Password is required.');
+                showModal('Sign in', 'Enter a password.', true);
                 return;
             }
-            
-            // Validation passed!
-            localStorage.setItem('currentUser', email);
-            
-            // Handle transfer logic
-            const transfer = localStorage.getItem('transferData');
-            if (transfer === 'false') {
-                localStorage.removeItem('fileHistory');
+            if (!isLogin) {
+                const confirmPassword = document.getElementById('confirmPasswordInput').value.trim();
+                if (password !== confirmPassword) {
+                    showModal('Passwords do not match', 'Those passwords didn\'t match. Try again.', true);
+                    return;
+                }
             }
-            localStorage.removeItem('transferData');
             
-            // Proceed to index
-            window.location.href = '/app';
+            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+            const payload = { email, password };
+            if (!isLogin) payload.fullName = name;
+            
+            const submitBtn = document.getElementById('authSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Please wait...';
+            
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                let data;
+                try {
+                    data = await response.json();
+                } catch(e) {
+                    data = { error: "Server returned an invalid response." };
+                }
+                
+                if (response.ok) {
+                    if (localStorage.getItem('transferData') === 'true') {
+                        localStorage.setItem('syncGuestData', 'true');
+                        localStorage.removeItem('transferData');
+                        
+                        const guestPhoto = localStorage.getItem('profilePhoto_Guest');
+                        if (guestPhoto) {
+                            localStorage.setItem('profilePhoto_' + email, guestPhoto);
+                            localStorage.removeItem('profilePhoto_Guest');
+                            fetch('/api/auth/update', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ profilePhoto: guestPhoto })
+                            });
+                        }
+                    } else {
+                        localStorage.setItem('clearGuestData', 'true');
+                        localStorage.removeItem('transferData');
+                    }
+                    localStorage.setItem('currentUser', email);
+                    window.location.href = '/app';
+                } else {
+                    let errTitle = 'Couldn\'t sign you in';
+                    let errMsg = data.error || 'Something went wrong. Try again.';
+                    
+                    // The backend now provides specific Google-like messages
+                    if (data.error && data.error.includes("Couldn't find")) {
+                        errTitle = 'Couldn\'t find your account';
+                    } else if (data.error && data.error.includes("Wrong password")) {
+                        errTitle = 'Wrong password';
+                    } else if (!isLogin && data.error && data.error.includes("already registered")) {
+                        errTitle = 'Account already exists';
+                        errMsg = 'This email is already registered. Please sign in instead.';
+                    }
+                    
+                    showModal(errTitle, errMsg, true);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = isLogin ? 'Sign In' : 'Sign Up';
+                }
+            } catch(err) {
+                console.error(err);
+                showModal('Connection error', 'We couldn\'t connect to the server. Please check your internet connection and try again.', true);
+                submitBtn.disabled = false;
+                submitBtn.textContent = isLogin ? 'Sign In' : 'Sign Up';
+            }
         });
     </script>
 </body>

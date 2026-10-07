@@ -7,7 +7,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -19,7 +19,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f8fbff;
             color: var(--text-dark);
             min-height: 100vh;
@@ -54,7 +54,7 @@
         }
 
         /* --- Typography --- */
-        h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 500; letter-spacing: -0.02em; }
+        h1, h2, h3 { font-family: 'Inter', sans-serif; font-weight: 500; letter-spacing: -0.02em; }
 
         /* --- Top Navbar --- */
         .navbar {
@@ -63,7 +63,7 @@
             padding: 0 40px; z-index: 10;
         }
         .nav-logo { 
-            font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 600; color: var(--text-dark); 
+            font-family: 'Inter', sans-serif; font-size: 28px; letter-spacing: -0.5px; font-weight: 500; font-weight: 600; color: var(--text-dark); 
             text-decoration: none; 
             user-select: none; outline: none; -webkit-tap-highlight-color: transparent; cursor: pointer;
         }
@@ -148,7 +148,7 @@
         .carousel-overlay.active .carousel-window { transform: scale(1) translateY(0); }
 
         .carousel-close {
-            position: absolute; top: 20px; right: 25px; background: none; border: none; font-size: 32px;
+            position: absolute; top: 20px; right: 25px; background: none; border: none; font-size: 32px; letter-spacing: -0.5px; font-weight: 500;
             cursor: pointer; color: var(--text-dark); opacity: 0.5; z-index: 10;
         }
         .carousel-close:hover { opacity: 1; }
@@ -175,9 +175,9 @@
             display: flex; flex-direction: column; justify-content: flex-start; align-items: center; overflow: hidden;
         }
 
-        .carousel-slide h2 { font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 700; margin-bottom: 25px; color: var(--text-dark); text-align: center; }
-        .carousel-slide h3 { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark); }
-        .carousel-slide p, .carousel-slide li { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 400; line-height: 1.6; color: var(--text-light); margin-bottom: 12px; }
+        .carousel-slide h2 { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 32px; letter-spacing: -0.5px; font-weight: 500; font-weight: 700; margin-bottom: 25px; color: var(--text-dark); text-align: center; }
+        .carousel-slide h3 { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark); }
+        .carousel-slide p, .carousel-slide li { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 1.6; color: var(--text-light); margin-bottom: 12px; }
         .carousel-slide strong { font-weight: 600; color: var(--text-dark); }
         
         /* Grid for features inside slide */
@@ -201,8 +201,8 @@
         }
         .modal-overlay.active .modal-glass { transform: scale(1); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 16px; }
-        .modal-header h3 { font-size: 24px; margin:0; }
-        .modal-close { background: none; border: none; font-size: 32px; cursor: pointer; color: var(--text-dark); opacity: 0.5; }
+        .modal-header h3 { font-size: 20px; font-weight: 400; color: var(--text-light); line-height: 1.5; letter-spacing: -0.3px; font-weight: 500; margin:0; }
+        .modal-close { background: none; border: none; font-size: 32px; letter-spacing: -0.5px; font-weight: 500; cursor: pointer; color: var(--text-dark); opacity: 0.5; }
         .modal-close:hover { opacity: 1; }
         .modal-body p { margin-bottom: 16px; line-height: 1.6; color: var(--text-light); }
         .modal-body strong { color: var(--text-dark); font-weight: 600; }
@@ -215,7 +215,7 @@
 
     <nav class="navbar">
         <a href="#" class="nav-logo" id="edusync-trigger" title="Double tap me!">EduSync</a>
-        <a href="/auth" class="nav-btn">Sign In</a>
+        <a href="/auth" class="nav-btn">Sign in</a>
     </nav>
 
     <div class="hero">
@@ -283,7 +283,7 @@
                         <p>You can use EduSync with or without an account!</p>
                         <p><strong>With an account:</strong> All your previous files and fact-checking history will be securely stored in our database, accessible from anywhere.</p>
                         <p><strong>Without an account:</strong> History is stored temporarily in your browser and may be lost if you clear data or log out.</p>
-                        <p style="font-size: 14px; margin-top: 20px; color: var(--accent);"><em>Pro tip: You can sign up later from a guest account in settings, and all your browser-stored history will be seamlessly transferred to our database!</em></p>
+                        <p style="font-size: 14px; line-height: 1.4; font-weight: 400; letter-spacing: 0.15px; margin-top: 20px; color: var(--accent);"><em>Pro tip: You can sign up later from a guest account in settings, and all your browser-stored history will be seamlessly transferred to our database!</em></p>
                     </div>
                 </div>
 
