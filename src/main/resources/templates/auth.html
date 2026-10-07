@@ -540,6 +540,14 @@
         let currentOtpHash = null;
         
         async function sendAuthOtp() {
+            if (!isLogin) {
+                const name = document.getElementById('nameInput').value.trim();
+                if (!name) {
+                    showModal('Name Required', 'Please enter your full name before verifying your email.', true);
+                    return;
+                }
+            }
+            
             const email = document.getElementById('emailInput').value.trim();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
