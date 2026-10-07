@@ -34,10 +34,16 @@ public class OtpService {
             message.setSubject("Your EduSync Verification Code");
             message.setText("Welcome to EduSync!\n\nYour 6-digit verification code is: " + otp + "\n\nPlease enter this code to complete your registration.\n\nThanks,\nThe EduSync Team");
             
-            mailSender.send(message);
+            java.util.concurrent.CompletableFuture.runAsync(() -> {
+                try {
+                    mailSender.send(message);
+                } catch (Exception e) {
+                    System.err.println("Failed to send OTP email asynchronously: " + e.getMessage());
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Failed to send OTP email.");
+            throw new RuntimeException("Failed to prepare OTP email.");
         }
         
         // Return only the hash to the controller
