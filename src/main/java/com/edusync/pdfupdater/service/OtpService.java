@@ -12,7 +12,7 @@ import java.util.Random;
 public class OtpService {
     
     @Autowired
-    private JavaMailSender mailSender;
+    private EmailService emailService;
 
     @Value("${spring.mail.username}")
     private String fromEmail;
@@ -30,25 +30,18 @@ public class OtpService {
         String salt = Long.toHexString(java.util.concurrent.ThreadLocalRandom.current().nextLong());
         String otpHash = salt + ":" + AuthUtils.legacyHashPassword(otp + salt);
         
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(email);
-            message.setSubject("Your EduSync Verification Code");
-            message.setText("Welcome to EduSync!\n\nYour 6-digit verification code is: " + otp + "\n\nPlease enter this code to complete your registration.\n\nThanks,\nThe EduSync Team");
-            
             new Thread(() -> {
                 try {
-                    mailSender.send(message);
+                    emailService.sendEmailHttp(
+                        email, 
+                        "Your EduSync Verification Code", 
+                        "Welcome to EduSync!\n\nYour 6-digit verification code is: " + otp + "\n\nPlease enter this code to complete your registration.\n\nThanks,\nThe EduSync Team"
+                    );
                 } catch (Exception e) {
-                    System.err.println("Failed to send OTP email: " + e.getMessage());
+                    System.err.println("Failed to trigger email API: " + e.getMessage());
                 }
             }).start();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to prepare OTP email.");
-        }
-        
+
         // Return only the hash to the controller
         return new String[]{otp, otpHash};
     }
