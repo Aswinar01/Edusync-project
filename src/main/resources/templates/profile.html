@@ -553,7 +553,7 @@
                 6-digit OTP sent to your new email address.</p>
             <input type="text" id="profileOtpInput" class="glass-input"
                 style="margin-bottom: 20px; text-align: center; letter-spacing: 10px; font-size: 22px; padding: 15px;"
-                placeholder="------" maxlength="6" onkeyup="if(event.key === 'Enter') verifyProfileOtp()">
+                placeholder="------" maxlength="6" onkeyup="if(event.key === 'Enter') verifyProfileOtp()" oninput="if(this.value.length === 6) verifyProfileOtp()">
             <button class="btn-glass-active" style="width: 100%;" id="verifyProfileOtpSubmitBtn"
                 onclick="verifyProfileOtp()">Confirm OTP</button>
         </div>

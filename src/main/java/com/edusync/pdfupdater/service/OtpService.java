@@ -12,7 +12,7 @@ import java.util.Random;
 public class OtpService {
     
     @Autowired
-    private JavaMailSender mailSender;
+    private EmailService emailService;
 
     @Value("${spring.mail.username}")
     private String fromEmail;
@@ -34,13 +34,7 @@ public class OtpService {
             message.setSubject("Your EduSync Verification Code");
             message.setText("Welcome to EduSync!\n\nYour 6-digit verification code is: " + otp + "\n\nPlease enter this code to complete your registration.\n\nThanks,\nThe EduSync Team");
             
-            java.util.concurrent.CompletableFuture.runAsync(() -> {
-                try {
-                    mailSender.send(message);
-                } catch (Exception e) {
-                    System.err.println("Failed to send OTP email asynchronously: " + e.getMessage());
-                }
-            });
+            emailService.sendEmailAsync(message);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to prepare OTP email.");
