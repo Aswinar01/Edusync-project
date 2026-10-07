@@ -12,7 +12,7 @@ import java.util.Random;
 public class OtpService {
     
     @Autowired
-    private EmailService emailService;
+    private JavaMailSender mailSender;
 
     @Value("${spring.mail.username}")
     private String fromEmail;
@@ -26,7 +26,8 @@ public class OtpService {
         // Hash the OTP securely for verification (salt:hash)
         // We use fast SHA-256 hashing here (legacyHashPassword) instead of BCrypt
         // because BCrypt is too slow on free-tier cloud VMs and blocks the UI for seconds.
-        String salt = java.util.UUID.randomUUID().toString();
+        // Use ThreadLocalRandom instead of UUID to prevent /dev/random blocking on tiny cloud VMs
+        String salt = Long.toHexString(java.util.concurrent.ThreadLocalRandom.current().nextLong());
         String otpHash = salt + ":" + AuthUtils.legacyHashPassword(otp + salt);
         
         try {
@@ -36,7 +37,13 @@ public class OtpService {
             message.setSubject("Your EduSync Verification Code");
             message.setText("Welcome to EduSync!\n\nYour 6-digit verification code is: " + otp + "\n\nPlease enter this code to complete your registration.\n\nThanks,\nThe EduSync Team");
             
-            emailService.sendEmailAsync(message);
+            new Thread(() -> {
+                try {
+                    mailSender.send(message);
+                } catch (Exception e) {
+                    System.err.println("Failed to send OTP email: " + e.getMessage());
+                }
+            }).start();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to prepare OTP email.");
