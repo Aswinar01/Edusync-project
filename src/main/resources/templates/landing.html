@@ -206,6 +206,56 @@
         .modal-close:hover { opacity: 1; }
         .modal-body p { margin-bottom: 16px; line-height: 1.6; color: var(--text-light); }
         .modal-body strong { color: var(--text-dark); font-weight: 600; }
+        
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            body { 
+                overflow-y: auto; 
+                overflow-x: hidden; 
+                justify-content: flex-start; 
+                padding-top: 100px;
+            }
+            .navbar { padding: 20px 25px; }
+            .hero { padding: 0 20px; }
+            .hero h1 { font-size: 48px; line-height: 1.05; }
+            .hero p { font-size: 16px; margin-bottom: 30px; }
+            .footer { 
+                position: relative; 
+                bottom: auto; 
+                margin-top: 60px; 
+                padding-bottom: 30px; 
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            .footer a { font-size: 13px; }
+            
+            /* Carousel Mobile */
+            .carousel-window { 
+                width: 95%; 
+                height: auto; 
+                min-height: 400px;
+                padding-bottom: 20px;
+                border-radius: 20px;
+            }
+            .carousel-tabs {
+                top: 15px;
+                left: 15px;
+                right: 40px;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .carousel-tab { padding: 6px 12px; font-size: 13px; }
+            .carousel-close { top: 10px; right: 15px; font-size: 28px; }
+            .carousel-slide { padding: 80px 20px 20px; }
+            .carousel-slide h2 { font-size: 26px; }
+            .carousel-slide h3 { font-size: 16px; }
+            .carousel-slide p, .carousel-slide li { font-size: 14px; }
+            .feature-grid { grid-template-columns: 1fr; gap: 10px; }
+            
+            /* Modals Mobile */
+            .modal-glass { padding: 25px; width: 92%; }
+            .modal-header h3 { font-size: 18px; }
+        }
     </style>
 </head>
 <body>

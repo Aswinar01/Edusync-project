@@ -329,7 +329,7 @@
     <div class="bg-waves"></div>
 
     <div class="top-nav">
-        <a href="/" class="back-btn">
+        <a href="#" onclick="handleBack(event)" class="back-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
@@ -436,6 +436,17 @@
         "use strict";
         let isLogin = true;
         let isEmailVerified = false;
+
+        function handleBack(event) {
+            event.preventDefault();
+            if (!isLogin) {
+                // If in Sign Up mode, go back to Sign In
+                toggleAuthMode(event);
+            } else {
+                // If in Sign In mode, go back to Landing
+                window.location.href = '/';
+            }
+        }
 
         function toggleAuthMode(e) {
             e.preventDefault();
