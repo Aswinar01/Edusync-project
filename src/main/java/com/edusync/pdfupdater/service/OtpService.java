@@ -24,8 +24,10 @@ public class OtpService {
         String otp = String.format("%06d", random.nextInt(999999));
         
         // Hash the OTP securely for verification (salt:hash)
+        // We use fast SHA-256 hashing here (legacyHashPassword) instead of BCrypt
+        // because BCrypt is too slow on free-tier cloud VMs and blocks the UI for seconds.
         String salt = java.util.UUID.randomUUID().toString();
-        String otpHash = salt + ":" + AuthUtils.hashPassword(otp + salt);
+        String otpHash = salt + ":" + AuthUtils.legacyHashPassword(otp + salt);
         
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -51,10 +53,7 @@ public class OtpService {
         String salt = parts[0];
         String hash = parts[1];
         
-        // For OTP, we still use the old raw hashing internally since we explicitly added a salt
-        // If AuthUtils.hashPassword was upgraded to BCrypt, it automatically handles its own salt.
-        // Wait, if AuthUtils.hashPassword is now BCrypt, we don't need a manual salt! BCrypt does it for us.
-        // But since we want to be safe, we can just use BCrypt's matching on (enteredOtp + salt) or just use BCrypt natively!
-        return AuthUtils.checkPassword(enteredOtp + salt, hash);
+        // Check using the fast SHA-256 hash (legacyHashPassword)
+        return AuthUtils.legacyHashPassword(enteredOtp + salt).equals(hash);
     }
 }
