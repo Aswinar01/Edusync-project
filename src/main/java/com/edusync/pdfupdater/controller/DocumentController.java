@@ -64,13 +64,26 @@ public class DocumentController {
         
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) return ResponseEntity.status(401).body(Map.of("error", "Not authenticated"));
+        
+        // Strict Security Validation: Only allow PDFs to prevent XSS/Malware uploads
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.equals(MediaType.APPLICATION_PDF_VALUE)) {
+            return ResponseEntity.status(422).body(Map.of("error", "Only PDF files are supported."));
+        }
+        
         User user = userRepository.findById(userId).orElseThrow();
 
         try {
             DocumentHistory doc = new DocumentHistory();
             doc.setUser(user);
-            doc.setFileName(name);
-            doc.setFileType(file.getContentType());
+            // Sanitize filename
+            String originalName = name;
+            if (originalName == null || originalName.trim().isEmpty()) originalName = file.getOriginalFilename();
+            if (originalName == null) originalName = "document.pdf";
+            String sanitizedFilename = originalName.replaceAll("[^a-zA-Z0-9\\.\\-_ ]", "_");
+            
+            doc.setFileName(sanitizedFilename);
+            doc.setFileType(MediaType.APPLICATION_PDF_VALUE);
             doc.setFileSize(file.getSize());
             doc.setFileData(file.getBytes());
             doc.setDocType(type);
@@ -96,6 +109,7 @@ public class DocumentController {
         DocumentHistory doc = docOpt.get();
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + doc.getFileName() + "\"")
+                .header("X-Content-Type-Options", "nosniff")
                 .contentType(MediaType.parseMediaType(doc.getFileType()))
                 .body(doc.getFileData());
     }

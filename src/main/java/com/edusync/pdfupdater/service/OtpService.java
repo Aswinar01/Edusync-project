@@ -23,8 +23,9 @@ public class OtpService {
         // Generate a 6-digit OTP
         String otp = String.format("%06d", random.nextInt(999999));
         
-        // Hash the OTP securely for verification
-        String otpHash = AuthUtils.hashPassword(otp);
+        // Hash the OTP securely for verification (salt:hash)
+        String salt = java.util.UUID.randomUUID().toString();
+        String otpHash = salt + ":" + AuthUtils.hashPassword(otp + salt);
         
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -44,7 +45,16 @@ public class OtpService {
     }
     
     public boolean verifyOtp(String enteredOtp, String expectedHash) {
-        if (enteredOtp == null || expectedHash == null) return false;
-        return AuthUtils.hashPassword(enteredOtp).equals(expectedHash);
+        if (enteredOtp == null || expectedHash == null || !expectedHash.contains(":")) return false;
+        String[] parts = expectedHash.split(":");
+        if (parts.length != 2) return false;
+        String salt = parts[0];
+        String hash = parts[1];
+        
+        // For OTP, we still use the old raw hashing internally since we explicitly added a salt
+        // If AuthUtils.hashPassword was upgraded to BCrypt, it automatically handles its own salt.
+        // Wait, if AuthUtils.hashPassword is now BCrypt, we don't need a manual salt! BCrypt does it for us.
+        // But since we want to be safe, we can just use BCrypt's matching on (enteredOtp + salt) or just use BCrypt natively!
+        return AuthUtils.checkPassword(enteredOtp + salt, hash);
     }
 }

@@ -7,7 +7,10 @@ import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "document_history")
+@Table(name = "document_history", indexes = {
+    @Index(name = "idx_document_user", columnList = "user_id"),
+    @Index(name = "idx_document_uploaded_at", columnList = "uploadedAt")
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -433,6 +433,7 @@
     </div>
 
     <script>
+        "use strict";
         let isLogin = true;
         let isEmailVerified = false;
 
@@ -738,7 +739,6 @@
                     submitBtn.textContent = isLogin ? 'Sign In' : 'Sign Up';
                 }
             } catch(err) {
-                console.error(err);
                 showModal('Connection error', 'We couldn\'t connect to the server. Please check your internet connection and try again.', true);
                 submitBtn.disabled = false;
                 submitBtn.textContent = isLogin ? 'Sign In' : 'Sign Up';

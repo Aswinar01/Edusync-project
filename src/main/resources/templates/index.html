@@ -1407,6 +1407,7 @@
     </div>
 
     <script th:inline="javascript">
+        "use strict";
 
         // --- IndexedDB for History ---
         const dbName = "EduSyncDB";
@@ -1456,7 +1457,6 @@
                     const data = await response.json();
                     return data.id;
                 } catch (error) {
-                    console.error('Error saving document to backend:', error);
                     throw error;
                 }
             }
@@ -1484,7 +1484,6 @@
                         date: new Date(doc.date).getTime()
                     }));
                 } catch (error) {
-                    console.error('Error fetching documents from backend:', error);
                     return [];
                 }
             }
@@ -1505,7 +1504,6 @@
                     if (!response.ok) throw new Error('Network response was not ok');
                     return true;
                 } catch (error) {
-                    console.error('Error deleting document:', error);
                     throw error;
                 }
             }
@@ -1526,7 +1524,6 @@
                     if (!response.ok) throw new Error('Network response was not ok');
                     return true;
                 } catch (error) {
-                    console.error('Error deleting all documents:', error);
                     throw error;
                 }
             }
@@ -1551,7 +1548,6 @@
                     if (!response.ok) throw new Error('Network response was not ok');
                     return true;
                 } catch (error) {
-                    console.error('Error renaming document:', error);
                     throw error;
                 }
             }
@@ -1779,10 +1775,8 @@
         }
 
         function togglePopover(e, id) {
-            console.log("togglePopover called for:", id);
             if(e) e.stopPropagation();
             const p = document.getElementById(id);
-            console.log("Popover element found:", p);
             const isActive = p.classList.contains('active');
             document.querySelectorAll('.popover').forEach(el => el.classList.remove('active'));
             if (!isActive) {
@@ -1857,10 +1851,8 @@
                                         updateUI();
                                     } else {
                                         const errText = await res.text();
-                                        console.error("Server rejected doc sync", doc.name, errText);
                                     }
                                 } catch (err) {
-                                    console.error("Failed to sync doc", doc.name, err);
                                 }
                             }
                             
@@ -1881,7 +1873,6 @@
                         loadHistory();
                     };
                 } catch(e) {
-                    console.error("Sync error", e);
                     loadHistory();
                 }
             }
@@ -2081,7 +2072,6 @@
                         }).join(''));
                         updates = JSON.parse(jsonString);
                     } catch (e) {
-                        console.error('Failed to parse document updates', e);
                     }
                 }
                 
@@ -2150,7 +2140,6 @@
                 clearInterval(progressInterval);
                 errorText.textContent = error.message || `Please upload a valid PDF under ${APP_CONFIG.MAX_FILE_SIZE_MB} MB.`;
                 showScreen('error');
-                console.error(error);
             }
         }
 

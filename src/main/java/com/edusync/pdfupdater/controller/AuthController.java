@@ -86,11 +86,16 @@ public class AuthController {
             return ResponseEntity.status(404).body(Map.of("error", "Couldn't find your account."));
         }
         
-        if (!userOpt.get().getPasswordHash().equals(AuthUtils.hashPassword(password))) {
+        if (!AuthUtils.checkPassword(password, userOpt.get().getPasswordHash())) {
             return ResponseEntity.status(401).body(Map.of("error", "Wrong password. Try again."));
         }
 
         User user = userOpt.get();
+        if (AuthUtils.needsUpgrade(user.getPasswordHash())) {
+            user.setPasswordHash(AuthUtils.hashPassword(password));
+            userRepository.save(user);
+        }
+        
         session.setAttribute("userId", user.getId());
         return ResponseEntity.ok(Map.of("message", "Logged in successfully", "userId", user.getId(), "fullName", user.getFullName()));
     }

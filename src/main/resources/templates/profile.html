@@ -637,6 +637,7 @@
     </div>
 
     <script>
+        "use strict";
         let originalEmail = '';
         let isProfileEmailVerified = true; // True if email not modified
 
@@ -665,7 +666,7 @@
                             }
                         }
                     })
-                    .catch(err => console.error(err));
+                    .catch(() => {});
             }
 
             // Load saved photo on load

@@ -70,8 +70,8 @@ public class PdfController {
                     .build();
         }
 
-        try {
-            PdfProcessorService.ProcessResult result = pdfProcessorService.processPdf(file.getInputStream());
+        try (java.io.InputStream is = file.getInputStream()) {
+            PdfProcessorService.ProcessResult result = pdfProcessorService.processPdf(is);
             byte[] updatedPdf = result.getPdfBytes();
 
             // Serialize updates to JSON and Base64 encode
@@ -105,11 +105,4 @@ public class PdfController {
         }
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
-    public ResponseEntity<String> handleMaxSizeException(org.springframework.web.multipart.MaxUploadSizeExceededException exc) {
-        log.warn("File size exceeded limit: " + exc.getMessage());
-        return ResponseEntity.status(org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE)
-                .header("X-Error-Message", "File is too large. Please upload a PDF under " + maxFileSize + ".")
-                .build();
-    }
 }
