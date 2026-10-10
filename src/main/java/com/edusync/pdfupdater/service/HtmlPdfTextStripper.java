@@ -216,7 +216,7 @@ public class HtmlPdfTextStripper extends PDFTextStripper {
 
     private void insertImage(ImageInfo img) {
         closeBlocks();
-        htmlContent.append("<div style=\"text-align: center; margin: 15pt 0;\">\n");
+        htmlContent.append("<div class=\"image-container\">\n");
         htmlContent.append("<img src=\"data:image/png;base64,")
                    .append(img.base64)
                    .append("\" alt=\"Extracted image\" />\n");

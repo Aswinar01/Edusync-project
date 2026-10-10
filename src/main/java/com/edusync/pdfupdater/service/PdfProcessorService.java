@@ -267,14 +267,20 @@ public class PdfProcessorService {
                 "}\n" +
                 "\n" +
                 "/* Image styling */\n" +
+                ".image-container {\n" +
+                "    text-align: center;\n" +
+                "    margin: 12pt 0;\n" +
+                "    page-break-inside: avoid;\n" +
+                "}\n" +
+                "\n" +
                 "img {\n" +
-                "    max-width: 100%;\n" +
-                "    max-height: 800px;\n" +
+                "    max-width: 75%;\n" +
+                "    max-height: 350px;\n" +
+                "    width: auto;\n" +
                 "    height: auto;\n" +
-                "    display: block;\n" +
-                "    margin: 15pt auto;\n" +
+                "    display: inline-block;\n" +
                 "    border-radius: 4pt;\n" +
-                "    box-shadow: 0 4px 6px rgba(0,0,0,0.1);\n" +
+                "    box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n" +
                 "}\n" +
                 "</style>\n";
 
