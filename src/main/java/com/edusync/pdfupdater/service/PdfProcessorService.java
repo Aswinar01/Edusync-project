@@ -265,6 +265,17 @@ public class PdfProcessorService {
                 "    font-style: italic;\n" +
                 "    margin-left: 4pt;\n" +
                 "}\n" +
+                "\n" +
+                "/* Image styling */\n" +
+                "img {\n" +
+                "    max-width: 100%;\n" +
+                "    max-height: 800px;\n" +
+                "    height: auto;\n" +
+                "    display: block;\n" +
+                "    margin: 15pt auto;\n" +
+                "    border-radius: 4pt;\n" +
+                "    box-shadow: 0 4px 6px rgba(0,0,0,0.1);\n" +
+                "}\n" +
                 "</style>\n";
 
         Element head = dom.head();
